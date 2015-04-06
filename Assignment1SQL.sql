@@ -28,6 +28,7 @@ REVOKE ALL ON DATABASE template1 FROM PUBLIC;
 REVOKE ALL ON DATABASE template1 FROM postgres;
 GRANT ALL ON DATABASE template1 TO postgres;
 GRANT CONNECT ON DATABASE template1 TO PUBLIC;
+CREATE DATABASE test WITH TEMPLATE = template0 OWNER = postgres;
 
 
 \connect "Assignment#1"
@@ -75,7 +76,8 @@ CREATE TABLE account (
     role text,
     address text,
     age integer,
-    state text
+    email text,
+    name text
 );
 
 
@@ -199,8 +201,8 @@ ALTER TABLE ONLY products ALTER COLUMN id SET DEFAULT nextval('products_id_seq':
 -- Data for Name: account; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO account VALUES (1, 'a', 'a', 'a', 1, 'a');
-INSERT INTO account VALUES (2, 'b', 'a', 'a', 2, 'a');
+INSERT INTO account VALUES (1, 'a', 'a', 'a', 1, 'a', NULL);
+INSERT INTO account VALUES (2, 'b', 'a', 'a', 2, 'a', NULL);
 
 
 --
@@ -412,6 +414,86 @@ CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 --
 
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+--
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- PostgreSQL database dump complete
+--
+
+\connect test
+
+SET default_transaction_read_only = off;
+
+--
+-- PostgreSQL database dump
+--
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET search_path = public, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: members; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE members (
+    id integer NOT NULL,
+    first_name character varying(45) NOT NULL,
+    last_name character varying(45) NOT NULL,
+    email character varying(45) NOT NULL,
+    uname character varying(45) NOT NULL,
+    pass character varying(45) NOT NULL,
+    regdate date NOT NULL
+);
+
+
+ALTER TABLE members OWNER TO postgres;
+
+--
+-- Data for Name: members; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+
+
+--
+-- Name: members_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY members
+    ADD CONSTRAINT members_pkey PRIMARY KEY (id);
 
 
 --
