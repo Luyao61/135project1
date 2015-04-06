@@ -201,15 +201,15 @@ ALTER TABLE ONLY products ALTER COLUMN id SET DEFAULT nextval('products_id_seq':
 -- Data for Name: account; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO account VALUES (1, 'a', 'a', 'a', 1, 'a', NULL);
-INSERT INTO account VALUES (2, 'b', 'a', 'a', 2, 'a', NULL);
+INSERT INTO account VALUES (9, 'asd', 'ddd', 'ddd', 123, 'ddd', 'asd');
+INSERT INTO account VALUES (10, 'vvv', 'asdas', 'sadsa', 23, 'asdsa', 'dsad');
 
 
 --
 -- Name: account_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('account_id_seq', 1, false);
+SELECT pg_catalog.setval('account_id_seq', 10, true);
 
 
 --
