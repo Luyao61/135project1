@@ -1,5 +1,4 @@
 <%@ page import ="java.sql.*" %>
-<%@ page import ="javax.servlet.http.* %>
 <%@page contentType="text/html; charset=GBK"%> 
 <%@ page import="javax.naming.*"%> 
 <%
