@@ -2,15 +2,16 @@
 <%@page contentType="text/html; charset=GBK"%> 
 <%@ page import="javax.naming.*"%> 
 <%
-    String userid = request.getParameter("uname");    
+    String userid = request.getParameter("name");    
     Class.forName("org.postgresql.Driver");
     Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/signup",
             "postgres", "8609126");
     Statement st = con.createStatement();
     ResultSet rs;
-    rs = st.executeQuery("select * from account where username='" + userid + "'"); 
+    rs = st.executeQuery("select * from account where name='" + userid + "'"); 
     if (rs.next()) {
         session.setAttribute("userid", userid);
+        
         //out.println("welcome " + userid);
         //out.println("<a href='logout.jsp'>Log out</a>");
         response.sendRedirect("success.jsp");
