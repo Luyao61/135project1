@@ -20,7 +20,7 @@
     
     
     if( rs.next() ){
-        response.sendRedirect("reg_failure.jsp");
+        response.sendRedirect("reg_failure.html");
     }
     else{
         int i = st.executeUpdate("insert into account(username, role, address, age, email, name) values ('" + user + "','" + role + "','" + address + "','" + age + "','" + email + "','" + name + "')");        
