@@ -27,12 +27,15 @@
 		   
 		   
 		   try{
+		        /********** SQL connection **********/
 		        Class.forName("org.postgresql.Driver");
                 Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/signup", "postgres", "8609126");
                 Statement st = con.createStatement();
                 
+                /********** insert button **********/
                 if(request.getParameter("insertBtn")!=null) {
-                
+                    
+                    // check if name already exists
                     rs = st.executeQuery("SELECT * FROM categories WHERE name = '" + name + "' ;");
                     if( rs.next() ){
                     %>
@@ -43,16 +46,30 @@
                         st.execute("INSERT INTO categories(name, description) values('"+name+"','"+description+"');");
                     }
                 }
+                
+                
+                
+                /********** delete button **********/
                 if(request.getParameter("deleteBtn")!=null) {
+                
+                    rs = st.executeQuery("SELECT FROM categories WHERE name = '" + name + "' ;");
+                    if( rs.next() ){
+                        st.execute("DELETE FROM categories WHERE name = '" + name + "' ;");
+                    }
+                    else{
                     %>
-                    <h3>delete</h3>
+                        <p style="color:red">attempt to delete a category that does not exists;</p>
                     <%
-                }		    
-                if(request.getParameter("updateBtn")!=null) {
-                    java.util.Date d = new java.util.Date();
-                    System.out.println(d.toString()); 
-                    out.println(d.toString()); 
+                    }
+                    
                 }
+                
+                /********** update button **********/
+                if(request.getParameter("updateBtn")!=null) {                    
+                    st.execute("UPDATE categories SET description = '" + description + "' WHERE name = '" + name +"';");
+                }
+                
+                
             }
             catch(SQLException e){
             %>
