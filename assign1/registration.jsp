@@ -8,13 +8,13 @@
 	String state = request.getParameter("state");
 	Boolean checkUnique;
 	ResultSet rs;
-    Class.forName("org.postgresql.Driver");
-    Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/signup",
-            "postgres", "8609126");
-    Statement st = con.createStatement();
-    //ResultSet rs;
     
     try{
+    
+        Class.forName("org.postgresql.Driver");
+        Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/signup",
+            "postgres", "8609126");
+        Statement st = con.createStatement();
         rs = st.executeQuery("SELECT * FROM account WHERE name = '" + name + "' ;");
         if( rs.next() ){
             response.sendRedirect("reg_failure.html");
