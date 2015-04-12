@@ -1,10 +1,12 @@
 <%@ page import ="java.sql.*" %>
+<%@include file="categories_helper.jsp"%>
 <!DOCTYPE html>
 <html>
     <head>
         <title>Catrgories</title>
     </head>
     <body>
+        <% out.println(displayDB()); %>
         <form>
             Name:<br>
             <input type="text" name="ctgrName" placeholder="unique name" required>
@@ -24,7 +26,7 @@
 		   String description = request.getParameter("description");    
 		   ResultSet rs;
 
-		   
+		   //out.println(displayDB());
 		   
 		   try{
 		        /********** SQL connection **********/
