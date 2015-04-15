@@ -7,6 +7,7 @@
     </head>
     <body>
         <% out.println(displayDB()); %>
+        <!--
         <form>
             Name:<br>
             <input type="text" name="ctgrName" placeholder="unique name" required>
@@ -20,6 +21,7 @@
 		    <input type="submit" value="update" name="updateBtn">	
 		    <br>
 		</form>
+        -->
 
 		<%
 		   String name = request.getParameter("ctgrName");
