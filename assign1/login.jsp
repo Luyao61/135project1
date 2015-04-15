@@ -10,11 +10,12 @@
     ResultSet rs;
     rs = st.executeQuery("select * from account where name='" + userid + "'"); 
     if (rs.next()) {
+    
+        String usrType = rs.getString("role");
         session.setAttribute("userid", userid);
-        
-        //out.println("welcome " + userid);
-        //out.println("<a href='logout.jsp'>Log out</a>");
-        response.sendRedirect("success.jsp");
+        session.setAttribute("userType", usrType);
+
+        response.sendRedirect("home.jsp");
     } else {
         out.println("Invalid password <a href='index.jsp'>try again</a>");
     }

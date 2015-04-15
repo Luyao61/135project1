@@ -1,13 +1,10 @@
 <%@ page import ="java.sql.*" %>
 <%@ page import ="java.io.PrintWriter" %>
 <%@ page import ="java.io.IOException" %>
-
 <%@ page import ="javax.servlet.ServletException" %>
 <%@ page import ="javax.servlet.http.HttpServlet" %>
 <%@ page import ="javax.servlet.http.HttpServletRequest" %>
 <%@ page import ="javax.servlet.http.HttpServletResponse" %>
-
-
 
 <%!
     public String displayDB(){
@@ -35,9 +32,12 @@
                 String cateName= rs.getString("name");
                 String cateDescription = rs.getString("description");
                 str += "<tr>";
-                str += "<td>" + cateName+ "</td>";
-                str += "<td>" + cateDescription+ "</td>";
-                str += "<td>TODO: ADD Action button</td>";
+                str += "<td> <input type=\"text\" name=\"" + cateName +"\" value =\""+ cateName + "\"> </td>";
+                str += "<td> <textarea rows=\"4\" cols=\"50\" name=\"" + cateName+"DESCP\">"+cateDescription  
+                    + "</textarea></td>";
+                str += "<td><input type=\"submit\" value=\"insert\" name=\""+cateName+"insertBtn\">" 
+                    + "<input type=\"submit\" value=\"delete\" name=\""+cateName+"deleteBtn\">" 
+                    + "<input type=\"submit\" value=\"update\" name=\""+cateName+"updateBtn\">	</td>";
                 str += "</tr>";
             }
             str +="</table>";
