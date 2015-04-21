@@ -104,7 +104,7 @@
             <tr>
                 <th>Name</th>
                 <th>description</th>
-                <th>Action</th>
+                
 
             </tr>
 
