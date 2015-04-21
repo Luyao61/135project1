@@ -14,7 +14,7 @@
 
         try{
             //Class.forName("org.postgresql.Driver");
-            conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/signup", "postgres", "8609126");
+conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/Assignment#1", "postgres", "52362882");
             stmt = conn.createStatement();
             
             String query = "SELECT * FROM categories;";
