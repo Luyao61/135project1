@@ -2,9 +2,9 @@
 <%@page contentType="text/html; charset=GBK"%> 
 <%@ page import="javax.naming.*"%> 
 <%
-    String userid = request.getParameter("name");    
+    String userid = request.getParameter("name");
     Class.forName("org.postgresql.Driver");
-Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/Assignment#1",
+    Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/Assignment#1",
             "postgres", "52362882");
     Statement st = con.createStatement();
     ResultSet rs;
@@ -12,8 +12,10 @@ Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/A
     if (rs.next()) {
     
         String usrType = rs.getString("role");
+        String username = rs.getString("name");
         session.setAttribute("userid", userid);
         session.setAttribute("userType", usrType);
+        
 
         response.sendRedirect("home.jsp");
     } else {

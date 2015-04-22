@@ -1,3 +1,11 @@
+<%@ page import ="java.sql.*" %>
+<%@ page import ="java.io.PrintWriter" %>
+<%@ page import ="java.io.IOException" %>
+<%@ page import ="javax.servlet.ServletException" %>
+<%@ page import ="javax.servlet.http.HttpServlet" %>
+<%@ page import ="javax.servlet.http.HttpServletRequest" %>
+<%@ page import ="javax.servlet.http.HttpServletResponse" %>
+
 <html>
 
 <body>
@@ -23,6 +31,8 @@
             %>
             <%-- -------- INSERT Code -------- --%>
             <%
+                String userid = (String)session.getAttribute("userid");
+
                 String action = request.getParameter("action");
                 // Check if an insertion is requested
                 if (action != null && action.equals("insert")) {
@@ -33,9 +43,10 @@
                     // Create the prepared statement and use it to
                     // INSERT name description INTO the categories table.
                     pstmt = conn
-                    .prepareStatement("INSERT INTO categories (name,description) VALUES (?, ?)");
+                    .prepareStatement("INSERT INTO categories (name,description,owner) VALUES (?, ?,?)");
                     pstmt.setString(1, request.getParameter("name"));
                     pstmt.setString(2, request.getParameter("description"));
+                    pstmt.setString(3, (String)session.getAttribute("userid"));
                     int rowCount = pstmt.executeUpdate();
 
                     // Commit transaction
@@ -92,14 +103,19 @@
             <%-- -------- SELECT Statement Code -------- --%>
             <%
                 // Create the statement
+                
                 Statement statement = conn.createStatement();
 
                 // Use the created statement to SELECT
                 // the student attributes FROM the categories table.
-                rs = statement.executeQuery("SELECT * FROM categories");
+                rs = statement.executeQuery("SELECT * FROM categories where owner='"+userid+"'");
+     
             %>
             
             <!-- Add an HTML table header row to format the results -->
+            
+                <%=session.getAttribute("userid")%>'s categories
+
             <table border="1">
             <tr>
                 <th>Name</th>

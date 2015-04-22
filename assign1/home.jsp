@@ -13,9 +13,10 @@
     String owner = new String("Owner");
     String customer = new String("Customer");
     String role = (String)session.getAttribute("userType");
+    String userid = request.getParameter("nuserid");
 
 
-    
+
     if (session.getAttribute("userType") == null) {
         out.print("<p>Invalid password <a href='index.jsp'>try again</a></p>");
     } 

@@ -9,6 +9,20 @@ SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
 SET search_path = public, pg_catalog;
 
 SET default_tablespace = '';
@@ -35,7 +49,8 @@ ALTER TABLE account OWNER TO postgres;
 
 CREATE TABLE categories (
     name character(20) NOT NULL,
-    description character(200)
+    description character(200),
+    owner character varying(20)
 );
 
 
@@ -62,14 +77,22 @@ ALTER TABLE signup OWNER TO postgres;
 INSERT INTO account VALUES ('z', 'O                   ', 20, 'C                   ');
 INSERT INTO account VALUES ('zhou', 'Owner               ', 12, 'AL                  ');
 INSERT INTO account VALUES ('q', 'Owner               ', 12, 'AL                  ');
+INSERT INTO account VALUES ('zhang', 'Owner               ', 1, 'CA                  ');
 
 
 --
 -- Data for Name: categories; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO categories VALUES ('apple               ', 'enter product categories here.                                                                                                                                                                          ');
-INSERT INTO categories VALUES ('banana              ', 'enter product categories here.                                                                                                                                                                          ');
+INSERT INTO categories VALUES ('b                   ', 'sadas                                                                                                                                                                                                   ', 'zhang');
+INSERT INTO categories VALUES ('nnn                 ', 'kkkk                                                                                                                                                                                                    ', 'zhou');
+INSERT INTO categories VALUES ('bbbb                ', 'hfddjk                                                                                                                                                                                                  ', 'zhou');
+INSERT INTO categories VALUES ('a                   ', 'a                                                                                                                                                                                                       ', 'zhang');
+INSERT INTO categories VALUES ('c                   ', 'c                                                                                                                                                                                                       ', 'zhang');
+INSERT INTO categories VALUES ('d                   ', 'd                                                                                                                                                                                                       ', 'zhang');
+INSERT INTO categories VALUES ('e                   ', 'e                                                                                                                                                                                                       ', 'zhang');
+INSERT INTO categories VALUES ('f                   ', 'f                                                                                                                                                                                                       ', 'zhang');
+INSERT INTO categories VALUES ('g                   ', 'g                                                                                                                                                                                                       ', 'zhang');
 
 
 --
