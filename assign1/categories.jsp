@@ -27,11 +27,7 @@
     %>
 <table>
     <tr>
-        <td valign="top">
-            <%-- -------- Include menu HTML code -------- --%>
-            <jsp:include page="menu.html" />
-        </td>
-        <td>
+
             <%-- Import the java.sql package --%>
             <%@ page import="java.sql.*"%>
             <%-- -------- Open Connection Code -------- --%>
@@ -58,22 +54,27 @@
                 String action = request.getParameter("action");
                 // Check if an insertion is requested
                 if (action != null && action.equals("insert")) {
+                    if (request.getParameter("nameNew") != null && !request.getParameter("nameNew").isEmpty() && request.getParameter("nameNew").trim().length() != 0){
+                        // Begin transaction
+                        conn.setAutoCommit(false);
 
-                    // Begin transaction
-                    conn.setAutoCommit(false);
+                        // Create the prepared statement and use it to
+                        // INSERT name description INTO the categories table.
+                        pstmt = conn
+                        .prepareStatement("INSERT INTO categories (name,description,owner) VALUES (?, ?,?)");
+                        pstmt.setString(1, request.getParameter("name"));
+                        pstmt.setString(2, request.getParameter("description"));
+                        pstmt.setString(3, (String)session.getAttribute("userid"));
+                        int rowCount = pstmt.executeUpdate();
 
-                    // Create the prepared statement and use it to
-                    // INSERT name description INTO the categories table.
-                    pstmt = conn
-                    .prepareStatement("INSERT INTO categories (name,description,owner) VALUES (?, ?,?)");
-                    pstmt.setString(1, request.getParameter("name"));
-                    pstmt.setString(2, request.getParameter("description"));
-                    pstmt.setString(3, (String)session.getAttribute("userid"));
-                    int rowCount = pstmt.executeUpdate();
-
-                    // Commit transaction
-                    conn.commit();
-                    conn.setAutoCommit(true);
+                        // Commit transaction
+                        conn.commit();
+                        conn.setAutoCommit(true);
+                    }
+                    else{
+                        out.print("<p style=\"color:red\">attempting to insert null, empty string, or spaces</p>");
+                        out.print("<p style=\"color:red\">data modification failure</p>");   
+                    }
                 }
             %>
             
@@ -81,23 +82,28 @@
             <%
                 // Check if an update is requested
                 if (action != null && action.equals("update")) {
+                    if (request.getParameter("nameNew") != null && !request.getParameter("nameNew").isEmpty() && request.getParameter("nameNew").trim().length() != 0){
+                        // Begin transaction
+                        conn.setAutoCommit(false);
 
-                    // Begin transaction
-                    conn.setAutoCommit(false);
+                        // Create the prepared statement and use it to
+                        pstmt = conn
+                        .prepareStatement("UPDATE categories SET name = ?, description = ? WHERE name = ?");
 
-                    // Create the prepared statement and use it to
-                    pstmt = conn
-                    .prepareStatement("UPDATE categories SET name = ?, description = ? WHERE name = ?");
-
-                    pstmt.setString(1, request.getParameter("nameNew"));
-                    pstmt.setString(2, request.getParameter("description"));
-                    pstmt.setString(3, request.getParameter("name"));
+                        pstmt.setString(1, request.getParameter("nameNew"));
+                        pstmt.setString(2, request.getParameter("description"));
+                        pstmt.setString(3, request.getParameter("name"));
                     
-                    int rowCount = pstmt.executeUpdate();
+                        int rowCount = pstmt.executeUpdate();
 
-                    // Commit transaction
-                    conn.commit();
-                    conn.setAutoCommit(true);
+                        // Commit transaction
+                        conn.commit();
+                        conn.setAutoCommit(true);
+                    }
+                    else {
+                        out.print("<p style=\"color:red\">trying to update name to null, empty string, or spaces</p>");
+                        out.print("<p style=\"color:red\">data modification failure</p>");
+                    }
                 }
             %>
             
@@ -137,7 +143,11 @@
             
             
             
-            
+        <td valign="top">
+            <%-- -------- Include menu HTML code -------- --%>
+            <jsp:include page="menu.html" />
+        </td>
+        <td>
             <!-- Add an HTML table header row to format the results -->
             
                 <p><%=session.getAttribute("userid")%>'s categories</p>
