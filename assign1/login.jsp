@@ -13,7 +13,7 @@
     
         String usrType = rs.getString("role");
         String username = rs.getString("name");
-        session.setAttribute("userid", userid);
+        session.setAttribute("userid", username);
         session.setAttribute("userType", usrType);
         
 

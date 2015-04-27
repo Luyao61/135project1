@@ -6,10 +6,12 @@
         <title>JSP Example</title>
     </head>
     <body>
+    <!--
     <%
         session.setAttribute("userid", null);
         session.setAttribute("userType", null);
         %>
+        -->
         <form method="post" action="login.jsp">
             <center>
             <table border="1" width="30%" cellpadding="3">
