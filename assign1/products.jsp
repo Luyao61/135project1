@@ -32,23 +32,23 @@
             <%-- -------- INSERT Code -------- --%>
                 <%
                 
-                String action = request.getParameter("action");
+                String paction = request.getParameter("paction");
                 // Check if an insertion is requested
-                if (action != null && action.equals("insert")) {
+                if (paction != null && paction.equals("pinsert")) {
                     
                     // Begin transaction
                     conn.setAutoCommit(false);
                     
                     // Create the prepared statement and use it to
-                    // INSERT name description INTO the categories table.
+                    // INSERT name description INTO the products table.
                     pstmt = conn
                     .prepareStatement("INSERT INTO products (sku,category,name,price) VALUES (?,?,?,?)");
+                    
                     pstmt.setString(1, request.getParameter("sku"));
                     pstmt.setString(2, request.getParameter("category"));
-                    pstmt.setString(3, request.getParameter("name"));
+                    pstmt.setString(3, request.getParameter("pname"));
                     pstmt.setInt(4, Integer.parseInt(request.getParameter("price")));
-                    
-                    int rowCount = pstmt.executeUpdate();
+                    pstmt.executeUpdate();
                     
                     // Commit transaction
                     conn.commit();
@@ -60,21 +60,22 @@
                 <%
                 //hahahah
                 // Check if an update is requested
-                if (action != null && action.equals("update")) {
+                if (paction != null && paction.equals("pupdate")) {
                     
                     // Begin transaction
                     conn.setAutoCommit(false);
                     
                     // Create the prepared statement and use it to
                     pstmt = conn
-                    .prepareStatement("UPDATE products SET sku = ?,category = ?,name=?, price=? WHERE sku=?");
+                    .prepareStatement("UPDATE products SET sku=?,category=?,name=?,price=? WHERE sku=?");
                     
-                    pstmt.setString(1, request.getParameter("sku"));
+                    pstmt.setString(1, request.getParameter("newsku"));
                     pstmt.setString(2, request.getParameter("category"));
-                    pstmt.setString(3, request.getParameter("name"));
+                    pstmt.setString(3, request.getParameter("pname"));
                     pstmt.setInt(4, Integer.parseInt(request.getParameter("price")));
                     pstmt.setString(5, request.getParameter("sku"));
-                    
+                    pstmt.executeUpdate();
+
                     // Commit transaction
                     conn.commit();
                     conn.setAutoCommit(true);
@@ -84,7 +85,7 @@
             <%-- -------- DELETE Code -------- --%>
             <%
                 // Check if a delete is requested
-                if (action != null && action.equals("delete")) {
+                if (paction != null && paction.equals("pdelete")) {
 
                     // Begin transaction
                     conn.setAutoCommit(false);
@@ -94,7 +95,7 @@
                     pstmt = conn.prepareStatement("DELETE FROM products WHERE sku = ?");
                     pstmt.setString(1, request.getParameter("sku"));
             
-                    int rowCount = pstmt.executeUpdate();
+                    pstmt.executeUpdate();
 
                     // Commit transaction
                     conn.commit();
@@ -121,11 +122,13 @@
             %>
             
             <!-- Add an HTML table header row to format the results -->
-            
+                
+                
             <%=request.getParameter("search")%> category
-
+                
+                
             <form action="products.jsp" method="POST">
-            <input type="hidden" name="action" value="search"/>
+            <input type="hidden" name="paction" value="search"/>
             <td><input value="" name="search" size="15"/></td>
             <td><input type="submit" value="Search"/></td>
 
@@ -141,9 +144,9 @@
 
             <tr>
                 <form action="products.jsp" method="POST">
-                <input type="hidden" name="action" value="insert"/>
+                <input type="hidden" name="paction" value="pinsert"/>
                 <th><input value="" name="sku" size="15"/></th>
-                <th><input value="" name="name" size="15"/></th>
+                <th><input value="" name="pname" size="15"/></th>
                 <th><input value="" name="category" size="15"/></th>
                 <th><input value="" name="price" size="15"/></th>
 
@@ -159,16 +162,16 @@
 
             <tr>
                 <form action="products.jsp" method="POST">
-                    <input type="hidden" name="action" value="update"/>
+                    <input type="hidden" name="paction" value="pupdate"/>
                     <input type="hidden" name="sku" value="<%=rs.getString("sku")%>"/>
                     
                             <%-- Get the name --%>
                 <td>
-                    <input value="<%=rs.getString("sku")%>" name="sku" size="15"/>
+                    <input value="<%=rs.getString("sku")%>" name="newsku" size="15"/>
                 </td>
                 <%-- Get the description --%>
                 <td>
-                    <input value="<%=rs.getString("name")%>" name="name" size="15"/>
+                    <input value="<%=rs.getString("name")%>" name="pname" size="15"/>
                 </td>
                 <td>
                 <input value="<%=rs.getString("category")%>" name="category" size="15"/>
@@ -180,7 +183,7 @@
                 <td><input type="submit" value="Update"></td>
                 </form>
                 <form action="products.jsp" method="POST">
-                <input type="hidden" name="action" value="delete"/>
+                <input type="hidden" name="paction" value="pdelete"/>
                 <input type="hidden" name="sku" value="<%=rs.getString("sku")%>"/>
                 <%-- Button --%>
                 <td><input type="submit" value="Delete"/></td>
