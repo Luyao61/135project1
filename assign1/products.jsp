@@ -42,9 +42,9 @@
                     // Create the prepared statement and use it to
                     // INSERT name description INTO the products table.
                     pstmt = conn
-                    .prepareStatement("INSERT INTO products (sku,category,name,price) VALUES (?,?,?,?)");
+                    .prepareStatement("INSERT INTO products (sku, category, name, price) VALUES (?, ?, ?, ?)");
                     
-                    pstmt.setString(1, request.getParameter("sku"));
+                    pstmt.setString(1, request.getParameter("newsku"));
                     pstmt.setString(2, request.getParameter("category"));
                     pstmt.setString(3, request.getParameter("pname"));
                     pstmt.setInt(4, Integer.parseInt(request.getParameter("price")));
@@ -125,27 +125,28 @@
                 
                 
             <%=request.getParameter("search")%> category
-                
-                
+            
+            <tr>
             <form action="products.jsp" method="POST">
             <input type="hidden" name="paction" value="search"/>
             <td><input value="" name="search" size="15"/></td>
             <td><input type="submit" value="Search"/></td>
-
+            </form>
+            </tr>
+                
             <table border="1">
             <tr>
                 <th>sku</th>
                 <th>name</th>
                 <th>category</th>
                 <th>price</th>
-                
 
             </tr>
 
             <tr>
                 <form action="products.jsp" method="POST">
                 <input type="hidden" name="paction" value="pinsert"/>
-                <th><input value="" name="sku" size="15"/></th>
+                <th><input value="" name="newsku" size="15"/></th>
                 <th><input value="" name="pname" size="15"/></th>
                 <th><input value="" name="category" size="15"/></th>
                 <th><input value="" name="price" size="15"/></th>
@@ -165,11 +166,9 @@
                     <input type="hidden" name="paction" value="pupdate"/>
                     <input type="hidden" name="sku" value="<%=rs.getString("sku")%>"/>
                     
-                            <%-- Get the name --%>
                 <td>
                     <input value="<%=rs.getString("sku")%>" name="newsku" size="15"/>
                 </td>
-                <%-- Get the description --%>
                 <td>
                     <input value="<%=rs.getString("name")%>" name="pname" size="15"/>
                 </td>
