@@ -13,7 +13,7 @@
     String owner = new String("Owner");
     String customer = new String("Customer");
     String role = (String)session.getAttribute("userType");
-    String userid = request.getParameter("userid");
+    String userid = request.getParameter("nuserid");
 
 
 
@@ -27,6 +27,7 @@
         <h3>Welcome <%=session.getAttribute("userid")%> </h3>
         <p>Links: TODO:add customer links</p>
         <p>Click <a href='logout.jsp'>here</a> to logout.</p>
+
     <%
     } 
     else if( role.contains("Owner") ) {
@@ -34,9 +35,12 @@
         <h3>You have Successfully logged in.</h3>
         <h3>Welcome <%=session.getAttribute("userid")%> </h3>
         <p>Links:<a href="categories.jsp">categories</a></p>
+        <p>Links:<a href="products.jsp">products</a></p>
         <p>Click <a href='logout.jsp'>here</a> to logout.</p>
+
     <%
     }
+    //out.print("<h1>NO</h1>");
     %>
     
 
