@@ -25,7 +25,7 @@
     %>
         <h3>You have Successfully logged in.</h3>
         <h3>Welcome <%=session.getAttribute("userid")%> </h3>
-        <p>Links: TODO:add customer links</p>
+        <p>Links:<a href="bproducts.jsp">products</a></p>
         <p>Click <a href='logout.jsp'>here</a> to logout.</p>
 
     <%
