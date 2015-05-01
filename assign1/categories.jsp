@@ -136,7 +136,9 @@
 
                 // Use the created statement to SELECT
                 // the student attributes FROM the categories table.
-                rs = statement.executeQuery("SELECT * FROM categories where owner='"+userid+"'");
+                //rs = statement.executeQuery("SELECT * FROM categories where owner='"+userid+"'");
+                rs = statement.executeQuery("SELECT * FROM categories");
+
      
             %>
             
