@@ -9,62 +9,29 @@
 <html>
 <head> 
     <title>Categories</title>
-
-</head>
-
-<body>
-    <%
-        String role = (String)session.getAttribute("userType");
-        String id = (String)session.getAttribute("userid");
-
-        if (id == null){
-            out.print("<h3>You have not logged in</h3>");
-        }
-        else if(role.contains("Customer")){
-            out.print("<h3>this page is available to owners only.</h3>");
-        }
-        else { 
-    %>
-<table>
-    <tr>
-
-            <%-- Import the java.sql package --%>
-            <%@ page import="java.sql.*"%>
-            <%-- -------- Open Connection Code -------- --%>
             <%
-            
-            Connection conn = null;
-            PreparedStatement pstmt = null;
-            ResultSet rs = null;
-            
-            try {
-                // Registering Postgresql JDBC driver with the DriverManager
-                Class.forName("org.postgresql.Driver");
-
-                // Open a connection to the database using DriverManager
-                conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/Assignment#1?" +
-                                                   "user=postgres&password=52362882");
-            %>
-            
-            
-            <%-- -------- INSERT Code -------- --%>
-            <%
+                Connection conn = null;
+                PreparedStatement pstmt = null;
+                ResultSet rs = null;
                 String userid = (String)session.getAttribute("userid");
+
+            %>
+                <%-- -------- INSERT Code -------- --%>
+            <%
 
                 String action = request.getParameter("action");
                 // Check if an insertion is requested
                 if (action != null && action.equals("insert")) {
-                    if (request.getParameter("nameNew") != null && !request.getParameter("nameNew").isEmpty() && request.getParameter("nameNew").trim().length() != 0){
+                    if (request.getParameter("name") != null && !request.getParameter("name").isEmpty() && request.getParameter("name").trim().length() != 0){
                         // Begin transaction
                         conn.setAutoCommit(false);
 
                         // Create the prepared statement and use it to
                         // INSERT name description INTO the categories table.
                         pstmt = conn
-                        .prepareStatement("INSERT INTO categories (name,description,owner) VALUES (?, ?,?)");
+                        .prepareStatement("INSERT INTO categories (name,description) VALUES (?,?)");
                         pstmt.setString(1, request.getParameter("name"));
                         pstmt.setString(2, request.getParameter("description"));
-                        pstmt.setString(3, (String)session.getAttribute("userid"));
                         int rowCount = pstmt.executeUpdate();
 
                         // Commit transaction
@@ -74,6 +41,7 @@
                     else{
                         out.print("<p style=\"color:red\">attempting to insert null, empty string, or spaces</p>");
                         out.print("<p style=\"color:red\">data modification failure</p>");   
+                        out.print(request.getParameter("nameNew"));
                     }
                 }
             %>
@@ -112,21 +80,62 @@
                 // Check if a delete is requested
                 if (action != null && action.equals("delete")) {
 
-                    // Begin transaction
-                    conn.setAutoCommit(false);
-
-                    // Create the prepared statement and use it to
-                    // DELETE categories FROM the categories table.
-                    pstmt = conn.prepareStatement("DELETE FROM categories WHERE name = ?");
-                    pstmt.setString(1, request.getParameter("name"));
+                    try{
+                        // Begin transaction
+                        conn.setAutoCommit(false);
+                        // Create the prepared statement and use it to
+                        // DELETE categories FROM the categories table.
+                        pstmt = conn.prepareStatement("DELETE FROM categories WHERE name = ?");
+                        pstmt.setString(1, request.getParameter("name"));
             
-                    int rowCount = pstmt.executeUpdate();
+                        int rowCount = pstmt.executeUpdate();
 
-                    // Commit transaction
-                    conn.commit();
-                    conn.setAutoCommit(true);
+                        // Commit transaction
+                        conn.commit();
+                        conn.setAutoCommit(true);
+                    }
+                    catch(Exception e){
+                        out.print("<p style=\"color:red\"> Data modification failed, please try again</p>");
+                    }
                 }
             %>
+
+</head>
+
+<body>
+    <%
+        String role = (String)session.getAttribute("userType");
+        String id = (String)session.getAttribute("userid");
+
+        if (id == null){
+            out.print("<h3>You have not logged in</h3>");
+        }
+        else if(role.contains("Customer")){
+            out.print("<h3>this page is available to owners only.</h3>");
+        }
+        else { 
+    %>
+<table>
+    <tr>
+
+            <%-- Import the java.sql package --%>
+            <%@ page import="java.sql.*"%>
+            <%-- -------- Open Connection Code -------- --%>
+            <%
+            
+
+            
+            try {
+                // Registering Postgresql JDBC driver with the DriverManager
+                Class.forName("org.postgresql.Driver");
+
+                // Open a connection to the database using DriverManager
+                conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/Assignment#1?" +
+                                                   "user=postgres&password=52362882");
+            %>
+            
+            
+
 
             <%-- -------- SELECT Statement Code -------- --%>
             <%
@@ -137,9 +146,17 @@
                 // Use the created statement to SELECT
                 // the student attributes FROM the categories table.
                 //rs = statement.executeQuery("SELECT * FROM categories where owner='"+userid+"'");
-                rs = statement.executeQuery("SELECT * FROM categories");
-
-     
+                
+                rs = statement.executeQuery("select c.id,c.name,c.description, 0 as number"
+                                            +" from categories c, products p"
+                                            +" where c.id not in (select cid from products)"
+                                            +" group by c.id, c.name, c.description"
+                                            +" union"
+                                            +" select c.id, c.name, c.description, count(p.id) as number"
+                                            +" from categories c, products p" 
+                                            +" where c.id=p.cid"
+                                            +" group by c.id, c.name, c.description"
+                                            +" order by id asc");
             %>
             
             
@@ -194,6 +211,8 @@
                         <input type="submit" value="Update">
                     </td>
                 </form>
+                <% if(rs.getInt("number") == 0 ){
+                %>
                 <form action="categories.jsp" method="POST">
                     <input type="hidden" name="action" value="delete"/>
                     <input type="hidden" name="name" value="<%=rs.getString("name")%>"/>
@@ -202,6 +221,9 @@
                         <input type="submit" value="Delete"/>
                     </td>
                 </form>
+                <%
+                }
+                %>
             </tr>
 
             <%

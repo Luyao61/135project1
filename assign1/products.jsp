@@ -7,104 +7,122 @@
 <%@ page import ="javax.servlet.http.HttpServletResponse" %>
 
 <html>
+<head>
+    <title>Products</title>
+    <%            
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+    %>
+    
+    <%-- -------- INSERT Code -------- --%>
+    <%
+    
+    String paction = request.getParameter("paction");
+    // Check if an insertion is requested
+    if (paction != null && paction.equals("pinsert")) {
+        try{
+            // Begin transaction
+            conn.setAutoCommit(false);
+        
+            // Create the prepared statement and use it to
+            // INSERT name description INTO the products table.
+            pstmt = conn
+            .prepareStatement("INSERT INTO products (sku, category, name, price) VALUES (?, ?, ?, ?)");
+        
+            pstmt.setString(1, request.getParameter("newsku"));
+            pstmt.setString(2, request.getParameter("category"));
+            pstmt.setString(3, request.getParameter("pname"));
+            pstmt.setInt(4, Integer.parseInt(request.getParameter("price")));
+            pstmt.executeUpdate();
+        
+            // Commit transaction
+            conn.commit();
+            conn.setAutoCommit(true);
+            out.print("<p style=\"color:red\">Product: "+ request.getParameter("pname") +" has been inserted</p>");
+        }
+        catch(Exception e){
+            out.print("<p style=\"color:red\">Data modification failure, please try again!</p>");
+        }
+    }
+    %>
+        
+    <%-- -------- UPDATE Code -------- --%>
+    <%
+    // Check if an update is requested
+    if (paction != null && paction.equals("pupdate")) {
+        
+        // Begin transaction
+        conn.setAutoCommit(false);
+        
+        // Create the prepared statement and use it to
+        pstmt = conn
+        .prepareStatement("UPDATE products SET sku=?,category=?,name=?,price=? WHERE sku=?");
+        
+        pstmt.setString(1, request.getParameter("newsku"));
+        pstmt.setString(2, request.getParameter("category"));
+        pstmt.setString(3, request.getParameter("pname"));
+        pstmt.setInt(4, Integer.parseInt(request.getParameter("price")));
+        pstmt.setString(5, request.getParameter("sku"));
+        pstmt.executeUpdate();
+
+        // Commit transaction
+        conn.commit();
+        conn.setAutoCommit(true);
+
+    }
+    %>
+    <%-- -------- DELETE Code -------- --%>
+    <%
+        // Check if a delete is requested
+        if (paction != null && paction.equals("pdelete")) {
+
+            // Begin transaction
+            conn.setAutoCommit(false);
+
+            // Create the prepared statement and use it to
+            // DELETE categories FROM the products table.
+            pstmt = conn.prepareStatement("DELETE FROM products WHERE sku = ?");
+            pstmt.setString(1, request.getParameter("sku"));
+    
+            pstmt.executeUpdate();
+
+            // Commit transaction
+            conn.commit();
+            conn.setAutoCommit(true);
+        }
+    %>
+    
+</head>
 
 <body>
-<table>
-    <tr>
-        <td valign="top">
-            <%-- Import the java.sql package --%>
-            <%@ page import="java.sql.*"%>
-            <%-- -------- Open Connection Code -------- --%>
-            <%
-            
-            Connection conn = null;
-            PreparedStatement pstmt = null;
-            ResultSet rs = null;
-            ResultSet dropdownMenu = null;
-
-            
-            try {
+<div>
+    <%
+    try{
                 // Registering Postgresql JDBC driver with the DriverManager
                 Class.forName("org.postgresql.Driver");
 
                 // Open a connection to the database using DriverManager
                 conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/Assignment#1?" +
                                                    "user=postgres&password=52362882");
-            %>
-            <%-- -------- INSERT Code -------- --%>
-            <%
-            
-            String paction = request.getParameter("paction");
-            // Check if an insertion is requested
-            if (paction != null && paction.equals("pinsert")) {
-                
-                // Begin transaction
-                conn.setAutoCommit(false);
-                
-                // Create the prepared statement and use it to
-                // INSERT name description INTO the products table.
-                pstmt = conn
-                .prepareStatement("INSERT INTO products (sku, category, name, price) VALUES (?, ?, ?, ?)");
-                
-                pstmt.setString(1, request.getParameter("newsku"));
-                pstmt.setString(2, request.getParameter("category"));
-                pstmt.setString(3, request.getParameter("pname"));
-                pstmt.setInt(4, Integer.parseInt(request.getParameter("price")));
-                pstmt.executeUpdate();
-                
-                // Commit transaction
-                conn.commit();
-                conn.setAutoCommit(true);
-            }
-            %>
-                
-            <%-- -------- UPDATE Code -------- --%>
-            <%
-            // Check if an update is requested
-            if (paction != null && paction.equals("pupdate")) {
-                
-                // Begin transaction
-                conn.setAutoCommit(false);
-                
-                // Create the prepared statement and use it to
-                pstmt = conn
-                .prepareStatement("UPDATE products SET sku=?,category=?,name=?,price=? WHERE sku=?");
-                
-                pstmt.setString(1, request.getParameter("newsku"));
-                pstmt.setString(2, request.getParameter("category"));
-                pstmt.setString(3, request.getParameter("pname"));
-                pstmt.setInt(4, Integer.parseInt(request.getParameter("price")));
-                pstmt.setString(5, request.getParameter("sku"));
-                pstmt.executeUpdate();
+                Statement statement = conn.createStatement();
+    %>
+    <%
+        rs = statement.executeQuery("SELECT name FROM categories");
+        while(rs.next()){
+        %>
+            <p><p>
+        <%
+        }
+    %>
+</div>
+<div>
+<table>
+    <tr>
+        <td valign="top">
+            <%-- -------- Open Connection Code -------- --%>
 
-                // Commit transaction
-                conn.commit();
-                conn.setAutoCommit(true);
-
-            }
-            %>
-            <%-- -------- DELETE Code -------- --%>
-            <%
-                // Check if a delete is requested
-                if (paction != null && paction.equals("pdelete")) {
-
-                    // Begin transaction
-                    conn.setAutoCommit(false);
-
-                    // Create the prepared statement and use it to
-                    // DELETE categories FROM the products table.
-                    pstmt = conn.prepareStatement("DELETE FROM products WHERE sku = ?");
-                    pstmt.setString(1, request.getParameter("sku"));
-            
-                    pstmt.executeUpdate();
-
-                    // Commit transaction
-                    conn.commit();
-                    conn.setAutoCommit(true);
-                }
-            %>
-
-            
+ 
             <!-- Add an HTML table header row to format the results -->
                 
                 
@@ -126,8 +144,7 @@
                 <th>price</th>
             </tr>
             <%
-                Statement statement = conn.createStatement();
-                rs = statement.executeQuery("SELECT * FROM categories;");
+                rs = statement.executeQuery("SELECT id, name FROM categories;");
             %>
             <tr>
                 <form action="products.jsp" method="POST">
@@ -138,7 +155,7 @@
                     <select name="category">  
                         <% while(rs.next()){
                         %>    
-                           <option value="<%=rs.getString("name")%>"><%=rs.getString("name")%></option>
+                           <option value="<%=rs.getInt(1)%>"><%=rs.getString(2)%></option>
                         <%
                             }
                         %>
@@ -159,10 +176,23 @@
                 // Use the created statement to SELECT
                 // the student attributes FROM the categories table.
                 if(keyword!=null){
-                rs = statement.executeQuery("SELECT * FROM products WHERE category='"+keyword+"'");
-
+                    rs = statement.executeQuery("SELECT id FROM categories WHERE name = '"+keyword+"'");
+                    if(rs.next()){
+                        int i = rs.getInt(1);
+                            rs = statement.executeQuery("SELECT p.sku, p.name, c.name as category, p.price"
+                                                    +" FROM categories c, products p"
+                                                    +" WHERE p.cid= c.id and cid = '"+i+"';");
+                        }
+                        else{
+                            rs = statement.executeQuery("SELECT p.sku, p.name, c.name as category, p.price"
+                                +" FROM categories c, products p"
+                                +" WHERE p.cid= c.id ;");
+                            out.print("<p style='color:red'>This category does not exist!</p>");
+                        }
                 }else{
-                rs = statement.executeQuery("SELECT * FROM products");
+                    rs = statement.executeQuery("SELECT p.sku, p.name, c.name as category, p.price"
+                                                +" FROM categories c, products p"
+                                                +" WHERE p.cid= c.id ;");
                 }
             %>
             <%-- -------- Iteration Code -------- --%>
@@ -249,6 +279,7 @@
         </td>
     </tr>
 </table>
+</div>
 </body>
 
 </html>
