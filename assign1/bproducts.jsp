@@ -23,7 +23,7 @@
             Class.forName("org.postgresql.Driver");
 
             // Open a connection to the database using DriverManager
-            conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/Assignment#1?" +
+            conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/project1?" +
                                                "user=postgres&password=52362882");
             Statement statement = conn.createStatement();
         %>
@@ -142,9 +142,12 @@
                 </td>
                 <td>
                     <%=rs.getInt("price")%>
+                    <% Integer price=rs.getInt("price");
+                    out.print("price");
+                    %>
                 </td>
             <%-- Button --%>
-                    <%out.println("<td><a href=\"productorder.jsp?productid="+pid+"\">BuyIt</a></td>");%>
+                    <%out.println("<td><a href=\"productorder.jsp?productid="+pid+"&price="+price+"\">BuyIt</a></td>");%>
                 </form>
             </tr>
 

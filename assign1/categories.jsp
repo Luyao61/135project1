@@ -130,7 +130,7 @@
                 Class.forName("org.postgresql.Driver");
 
                 // Open a connection to the database using DriverManager
-                conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/Assignment#1?" +
+                conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/project1?" +
                                                    "user=postgres&password=52362882");
             %>
             

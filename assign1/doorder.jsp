@@ -16,15 +16,13 @@
 <%@ page import="java.sql.*"%>
 <%-- -------- Open Connection Code -------- --%>
 <%
-Statement stmt;
+
 Connection conn = null;
 PreparedStatement pstmt = null;
 ResultSet rs = null;
 ResultSet dropdownMenu = null;
 String usid = (String)session.getAttribute("userid");
 String pdid = request.getParameter("productid");
-String price_str = (String)request.getParameter("price");
-Integer price = Integer.parseInt(price_str);
 
 try {
 
@@ -39,23 +37,23 @@ try {
     String paction = request.getParameter("action");
     // Check if an insertion is requested
     if (paction != null && paction.equals("addtocart")) {
-        
+
         // Begin transaction
-        conn.setAutoCommit(false);
+        //conn.setAutoCommit(false);
         
         // Create the prepared statement and use it to
         // INSERT name description INTO the products table.
-        pstmt = conn
-        .prepareStatement("INSERT INTO cart (uid, pid, price, quanity) VALUES (?, ?, ?, ?)");
-        pstmt.setString(1, request.getParameter("uid"));
-        pstmt.setString(2, request.getParameter("pid"));
-        pstmt.setInt(3, Integer.parseInt(request.getParameter("price")));
-        pstmt.setInt(4, Integer.parseInt(request.getParameter("quanity")));
-       pstmt.executeUpdate();
+        //pstmt = conn
+        //.prepareStatement("INSERT INTO cart (pid, uid, price, quanity) VALUES (?, ?, ?, ?)");
+        //pstmt.setString(1, pdid);
+        //pstmt.setString(2, usid);
+        //pstmt.setInt(3, 100);
+        //pstmt.setInt(4, Integer.parseInt(request.getParameter("quanity")));
+       // pstmt.executeUpdate();
         
         // Commit transaction
-        conn.commit();
-        conn.setAutoCommit(true);
+        //conn.commit();
+        //conn.setAutoCommit(true);
     }
     %>
     
@@ -63,7 +61,7 @@ try {
     
     <!-- Add an HTML table header row to format the results -->
     <p>
-    product <%=request.getParameter("pid")%>
+    product <%=request.getParameter("productid")%>
     </p>
     <p>
     price <%=request.getParameter("price")%>
@@ -71,20 +69,12 @@ try {
     <p>
     quanity
     </p>
-    
     <tr>
-    <form action="productorder.jsp" method="POST">
-    <input type="hidden" name="action" value="addtocart"/>
-    <input type="hidden" name="pid" value="<%=request.getParameter("productid")%>"/>
-    <input type="hidden" name="uid" value="<%=(String)session.getAttribute("userid")%>"/>
-    <input type="hidden" name="price" value="<%=Integer.parseInt(price_str)%>"/>
-    <td><input value="" name="quanity" size="15"/></td>
-    <td><input type="submit" value="Order"/></td>
-    </form>
+    
     <table border="1">
     <tr>
-    <th>USER</th>
     <th>SKU</th>
+    <th>USER</th>
     <th>price</th>
     <th>quanity</th>
     </tr>
@@ -95,10 +85,21 @@ try {
     // Use the created statement to SELECT
     // the student attributes FROM the categories table.
     Statement statement = conn.createStatement();
-    rs = statement.executeQuery("SELECT * FROM cart WHERE uid='"+usid+"'");
+
+    rs = statement.executeQuery("SELECT * FROM product WHERE uid='"+pdid+"'");
     
     %>
     <%-- -------- Iteration Code -------- --%>
+    
+    <form action="doproductorder.jsp" method="POST">
+    <input type="hidden" name="action" value="addtocart"/>
+    <input type="hidden" name="uid" value="<%rs.getString("sku")%>"/>
+    <input type="hidden" name="pid" value="<%rs.getString("sku")%>"/>
+    <input type="hidden" name="price" value="<%rs.getInt("price")%>"/>
+    <td><input value="" name="quanity" size="15"/></td>
+    <td><input type="submit" value="Order"/></td>
+    </form>
+
     
     <%
     // Iterate over the ResultSet
@@ -108,10 +109,10 @@ try {
         <tr>
         <form action="productorder.jsp" method="POST">
         <td>
-        <%=rs.getString("uid")%>
+        <%=rs.getString("pid")%>
         </td>
         <td>
-        <%=rs.getString("pid")%>
+        <%=rs.getString("uid")%>
         </td>
         <td>
         <%=rs.getString("price")%>
@@ -126,7 +127,7 @@ try {
         <%}
         %>
         
-    <p><a href="bproducts.jsp?filter=-1&search=%3C%=request.getParameter%28">countinue shopping</a></p>
+    
     <%-- -------- Close Connection Code -------- --%>
     <%
     // Close the ResultSet
