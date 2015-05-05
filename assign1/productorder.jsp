@@ -73,7 +73,7 @@ try {
     </p>
     
     <tr>
-    <form action="productorder.jsp" method="POST">
+    <form action="productorder.jsp?productid=<%=request.getParameter("productid")%>&price=<%=Integer.parseInt(price_str)%>" method="POST">
     <input type="hidden" name="action" value="addtocart"/>
     <input type="hidden" name="pid" value="<%=request.getParameter("productid")%>"/>
     <input type="hidden" name="uid" value="<%=(String)session.getAttribute("userid")%>"/>
@@ -114,10 +114,10 @@ try {
         <%=rs.getString("pid")%>
         </td>
         <td>
-        <%=rs.getString("price")%>
+        <%=rs.getInt("price")%>
         </td>
         <td>
-        <%=rs.getString("quanity")%>
+        <%=rs.getInt("quanity")%>
         </td>
         <%-- Button --%>
         </form>
@@ -127,6 +127,8 @@ try {
         %>
         
     <p><a href="bproducts.jsp?filter=-1&search=%3C%=request.getParameter%28">countinue shopping</a></p>
+    <p><a href="buycart.jsp">buy shopping cart</a></p>
+
     <%-- -------- Close Connection Code -------- --%>
     <%
     // Close the ResultSet

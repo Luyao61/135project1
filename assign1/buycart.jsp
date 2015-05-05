@@ -16,65 +16,33 @@
 <%@ page import="java.sql.*"%>
 <%-- -------- Open Connection Code -------- --%>
 <%
-
+Statement stmt;
 Connection conn = null;
 PreparedStatement pstmt = null;
 ResultSet rs = null;
 ResultSet dropdownMenu = null;
 String usid = (String)session.getAttribute("userid");
 String pdid = request.getParameter("productid");
-
+Integer total =0;
 try {
-
+                                                
     // Registering Postgresql JDBC driver with the DriverManager
     Class.forName("org.postgresql.Driver");
     
     // Open a connection to the database using DriverManager
     conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/project1?" +
                                        "user=postgres&password=52362882");
-  //add to cart
     
-    String paction = request.getParameter("action");
-    // Check if an insertion is requested
-    if (paction != null && paction.equals("addtocart")) {
-
-        // Begin transaction
-        //conn.setAutoCommit(false);
-        
-        // Create the prepared statement and use it to
-        // INSERT name description INTO the products table.
-        //pstmt = conn
-        //.prepareStatement("INSERT INTO cart (pid, uid, price, quanity) VALUES (?, ?, ?, ?)");
-        //pstmt.setString(1, pdid);
-        //pstmt.setString(2, usid);
-        //pstmt.setInt(3, 100);
-        //pstmt.setInt(4, Integer.parseInt(request.getParameter("quanity")));
-       // pstmt.executeUpdate();
-        
-        // Commit transaction
-        //conn.commit();
-        //conn.setAutoCommit(true);
-    }
     %>
     
     
     
     <!-- Add an HTML table header row to format the results -->
-    <p>
-    product <%=request.getParameter("productid")%>
-    </p>
-    <p>
-    price <%=request.getParameter("price")%>
-    </p>
-    <p>
-    quanity
-    </p>
-    <tr>
     
     <table border="1">
     <tr>
-    <th>SKU</th>
     <th>USER</th>
+    <th>SKU</th>
     <th>price</th>
     <th>quanity</th>
     </tr>
@@ -85,40 +53,30 @@ try {
     // Use the created statement to SELECT
     // the student attributes FROM the categories table.
     Statement statement = conn.createStatement();
-
-    rs = statement.executeQuery("SELECT * FROM product WHERE uid='"+pdid+"'");
+    rs = statement.executeQuery("SELECT * FROM cart WHERE uid='"+usid+"'");
     
     %>
     <%-- -------- Iteration Code -------- --%>
     
-    <form action="doproductorder.jsp" method="POST">
-    <input type="hidden" name="action" value="addtocart"/>
-    <input type="hidden" name="uid" value="<%rs.getString("sku")%>"/>
-    <input type="hidden" name="pid" value="<%rs.getString("sku")%>"/>
-    <input type="hidden" name="price" value="<%rs.getInt("price")%>"/>
-    <td><input value="" name="quanity" size="15"/></td>
-    <td><input type="submit" value="Order"/></td>
-    </form>
-
-    
     <%
     // Iterate over the ResultSet
     while (rs.next()) {
+        total = total +rs.getInt("price")*rs.getInt("quanity");
         %>
         
         <tr>
         <form action="productorder.jsp" method="POST">
         <td>
-        <%=rs.getString("pid")%>
-        </td>
-        <td>
         <%=rs.getString("uid")%>
         </td>
         <td>
-        <%=rs.getString("price")%>
+        <%=rs.getString("pid")%>
         </td>
         <td>
-        <%=rs.getString("quanity")%>
+        <%=rs.getInt("price")%>
+        </td>
+        <td>
+        <%=rs.getInt("quanity")%>
         </td>
         <%-- Button --%>
         </form>
@@ -126,8 +84,11 @@ try {
     
         <%}
         %>
-        
-    
+    <%out.print("total price: ");%>
+    <%out.print(total);%>
+    <p><a href="bproducts.jsp?filter=-1&search=%3C%=request.getParameter%28">countinue shopping</a></p>
+    <p><a href="purchase.jsp">Purchase click here!!!!!</a></p>
+
     <%-- -------- Close Connection Code -------- --%>
     <%
     // Close the ResultSet

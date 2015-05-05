@@ -100,7 +100,7 @@
             <!-- Add an HTML table header row to format the results -->
                 
                 
-            <%=request.getParameter("search")%> category
+            <%=request.getParameter("search")%> product name
             
             <tr>
             <form action="bproducts.jsp" method="POST">
