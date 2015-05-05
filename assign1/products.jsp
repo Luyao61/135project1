@@ -7,6 +7,22 @@
 <%@ page import ="javax.servlet.http.HttpServletResponse" %>
 
 <html>
+
+<!-- ---------- Check user type ---------- -->
+<%
+String role = (String)session.getAttribute("userType");
+String userid = (String)session.getAttribute("userid");
+
+if (userid == null){
+    out.print("<h3>You have not logged in</h3>");
+}
+else if(role.contains("Customer")){
+    out.print("<h3>this page is available to owners only.</h3>");
+}
+else { 
+%>
+
+
 <head>
     <title>Products</title>
     <%            
@@ -15,8 +31,19 @@
         ResultSet rs = null;
     %>
     
+    <%
+    try{
+                // Registering Postgresql JDBC driver with the DriverManager
+                Class.forName("org.postgresql.Driver");
+
+                // Open a connection to the database using DriverManager
+                conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/Assignment#1?" +
+                                                   "user=postgres&password=52362882");
+                Statement statement = conn.createStatement();
+    %>
     <%-- -------- INSERT Code -------- --%>
     <%
+                        
     
     String paction = request.getParameter("paction");
     // Check if an insertion is requested
@@ -27,11 +54,13 @@
         
             // Create the prepared statement and use it to
             // INSERT name description INTO the products table.
+
+
             pstmt = conn
-            .prepareStatement("INSERT INTO products (sku, category, name, price) VALUES (?, ?, ?, ?)");
+            .prepareStatement("INSERT INTO products (sku, cid, name, price) VALUES (?, ?, ?, ?)");
         
             pstmt.setString(1, request.getParameter("newsku"));
-            pstmt.setString(2, request.getParameter("category"));
+            pstmt.setInt(2, Integer.parseInt(request.getParameter("category")));
             pstmt.setString(3, request.getParameter("pname"));
             pstmt.setInt(4, Integer.parseInt(request.getParameter("price")));
             pstmt.executeUpdate();
@@ -51,24 +80,34 @@
     <%
     // Check if an update is requested
     if (paction != null && paction.equals("pupdate")) {
+        try{
+            rs = statement.executeQuery("SELECT id FROM categories WHERE name = '" + request.getParameter("category") +"'");
+            if(rs.next()){
+            // Begin transaction
+                conn.setAutoCommit(false);
         
-        // Begin transaction
-        conn.setAutoCommit(false);
+                // Create the prepared statement and use it to
+                pstmt = conn
+                .prepareStatement("UPDATE products SET sku=?,cid=?,name=?,price=? WHERE sku=?");
         
-        // Create the prepared statement and use it to
-        pstmt = conn
-        .prepareStatement("UPDATE products SET sku=?,category=?,name=?,price=? WHERE sku=?");
-        
-        pstmt.setString(1, request.getParameter("newsku"));
-        pstmt.setString(2, request.getParameter("category"));
-        pstmt.setString(3, request.getParameter("pname"));
-        pstmt.setInt(4, Integer.parseInt(request.getParameter("price")));
-        pstmt.setString(5, request.getParameter("sku"));
-        pstmt.executeUpdate();
+                pstmt.setString(1, request.getParameter("newsku"));
+                pstmt.setInt(2, rs.getInt(1));
+                pstmt.setString(3, request.getParameter("pname"));
+                pstmt.setInt(4, Integer.parseInt(request.getParameter("price")));
+                pstmt.setString(5, request.getParameter("sku"));
+                pstmt.executeUpdate();
 
-        // Commit transaction
-        conn.commit();
-        conn.setAutoCommit(true);
+                // Commit transaction
+                conn.commit();
+                conn.setAutoCommit(true);
+            }
+            else{
+                out.print("<p style=\"color:red\">Data modification failure, category: "+ request.getParameter("category") +" does not exist!</p>");
+            }
+        }
+        catch(Exception e){
+            out.print("<p style=\"color:red\">Data modification failure, please try again!</p>");
+        }
 
     }
     %>
@@ -77,46 +116,44 @@
         // Check if a delete is requested
         if (paction != null && paction.equals("pdelete")) {
 
-            // Begin transaction
-            conn.setAutoCommit(false);
+            try{
+                // Begin transaction
+                conn.setAutoCommit(false);
 
-            // Create the prepared statement and use it to
-            // DELETE categories FROM the products table.
-            pstmt = conn.prepareStatement("DELETE FROM products WHERE sku = ?");
-            pstmt.setString(1, request.getParameter("sku"));
+                // Create the prepared statement and use it to
+                // DELETE categories FROM the products table.
+                pstmt = conn.prepareStatement("DELETE FROM products WHERE sku = ?");
+                pstmt.setString(1, request.getParameter("sku"));
     
-            pstmt.executeUpdate();
+                pstmt.executeUpdate();
 
-            // Commit transaction
-            conn.commit();
-            conn.setAutoCommit(true);
+                // Commit transaction
+                conn.commit();
+                conn.setAutoCommit(true);
+            }
+            catch(Exception e){
+                out.print("<p style=\"color:red\">Data modification failure, please try again!</p>");
+            }
         }
     %>
     
 </head>
 
 <body>
-<div>
-    <%
-    try{
-                // Registering Postgresql JDBC driver with the DriverManager
-                Class.forName("org.postgresql.Driver");
+<jsp:include page="menu.html" />
+<div style="float:left; width:15%">
 
-                // Open a connection to the database using DriverManager
-                conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/Assignment#1?" +
-                                                   "user=postgres&password=52362882");
-                Statement statement = conn.createStatement();
-    %>
     <%
-        rs = statement.executeQuery("SELECT name FROM categories");
+        rs = statement.executeQuery("SELECT id, name FROM categories");
+        out.print("<p><a href='products.jsp?filter=-1&search=<%=request.getParameter('search')%'>All Categories</a></p>");
         while(rs.next()){
         %>
-            <p><p>
+            <p><a href="products.jsp?filter=<%=rs.getString(1)%>"><%=rs.getString(2)%></a></p>
         <%
         }
     %>
 </div>
-<div>
+<div style="float:right; width:85%">
 <table>
     <tr>
         <td valign="top">
@@ -124,14 +161,23 @@
 
  
             <!-- Add an HTML table header row to format the results -->
-                
-                
-            <%=request.getParameter("search")%> category
+            
+            <!--
+            <%    
+            if(request.getParameter("search") == null){
+                out.print("<p>All categories</p>");
+            }
+            else{
+                out.print("<p>"+request.getParameter("search")+" categories</p>");
+            }
+            %>
+            -->
             
             <tr>
             <form action="products.jsp" method="POST">
             <input type="hidden" name="paction" value="search"/>
             <td><input value="" name="search" size="15"/></td>
+            <td><input value="<%=request.getParameter("filter")%>" name="filter" type="hidden"/><td>
             <td><input type="submit" value="Search"/></td>
             </form>
             </tr>
@@ -147,7 +193,7 @@
                 rs = statement.executeQuery("SELECT id, name FROM categories;");
             %>
             <tr>
-                <form action="products.jsp" method="POST">
+                <form action="products.jsp" method="GET">
                 <input type="hidden" name="paction" value="pinsert"/>
                 <th><input value="" name="newsku" size="15"/></th>
                 <th><input value="" name="pname" size="15"/></th>
@@ -162,7 +208,21 @@
                         
                     </select>
                 </th>
-                <th><input value="" name="price" size="15"/></th>
+                <th>
+                    <input value="" name="price" size="15"/>
+                    <%
+                        if(request.getParameter("filter") != null){
+                        %>
+                            <input value="<%=request.getParameter("filter")%>" name="filter" type="hidden"/>
+                        <%
+                        }
+                        if(request.getParameter("search") != null){
+                        %>
+                            <input value="<%=request.getParameter("search")%>" name="search" type="hidden"/>
+                        <%
+                        }
+                    %>
+                </th>
                 <th><input type="submit" value="Insert"/></th>
             </form>
             </tr>
@@ -171,28 +231,48 @@
             <%-- -------- SELECT Statement Code -------- --%>
             <%
                 // Create the statement
-                String keyword = request.getParameter("search");
+                String search = request.getParameter("search");
+//                out.print(search+"\n");
+                int filter;
+                try{
+                    filter =  Integer.parseInt(request.getParameter("filter"));
+                }catch(Exception e){
+                    filter = -1;
+                }
+
                     
                 // Use the created statement to SELECT
                 // the student attributes FROM the categories table.
-                if(keyword!=null){
-                    rs = statement.executeQuery("SELECT id FROM categories WHERE name = '"+keyword+"'");
-                    if(rs.next()){
-                        int i = rs.getInt(1);
-                            rs = statement.executeQuery("SELECT p.sku, p.name, c.name as category, p.price"
-                                                    +" FROM categories c, products p"
-                                                    +" WHERE p.cid= c.id and cid = '"+i+"';");
-                        }
-                        else{
-                            rs = statement.executeQuery("SELECT p.sku, p.name, c.name as category, p.price"
-                                +" FROM categories c, products p"
-                                +" WHERE p.cid= c.id ;");
-                            out.print("<p style='color:red'>This category does not exist!</p>");
-                        }
-                }else{
+                if(filter != -1 && search == null ){
                     rs = statement.executeQuery("SELECT p.sku, p.name, c.name as category, p.price"
                                                 +" FROM categories c, products p"
-                                                +" WHERE p.cid= c.id ;");
+                                                +" WHERE p.cid= c.id and cid ="+filter
+                                                +" order by p.id asc;");   
+//                out.print(1);
+                }
+                else if(filter == -1 && search == null){
+                    rs = statement.executeQuery("SELECT p.sku, p.name, c.name as category, p.price"
+                                                +" FROM categories c, products p"
+                                                +" WHERE p.cid= c.id"
+                                                +" order by p.id asc;");
+//                out.print(2);
+                }
+                else if(filter == -1 && search != null){
+                    rs = statement.executeQuery("SELECT p.sku, p.name, c.name as category, p.price"
+                                                +" FROM categories c, products p"
+                                                +" WHERE p.cid= c.id"
+                                                +" AND"
+                                                +" p.name LIKE '%"+search+"%'"
+                                                +" order by p.id asc;"); 
+//                out.print(3);
+                }
+                else if(filter != -1 && search != null ){
+                    rs = statement.executeQuery("SELECT p.sku, p.name, c.name as category, p.price"
+                                                +" FROM categories c, products p"
+                                                +" WHERE p.cid= c.id and cid = '"+filter+"'"
+                                                +" and p.name LIKE '%"+search+"%'"
+                                                +" order by p.id asc;"); 
+//                    out.print(4);
                 }
             %>
             <%-- -------- Iteration Code -------- --%>
@@ -218,12 +298,36 @@
                 <td>
                 <input value="<%=rs.getInt("price")%>" name="price" size="15"/>
                 </td>
+                    <%
+                        if(request.getParameter("filter") != null){
+                        %>
+                            <input value="<%=request.getParameter("filter")%>" name="filter" type="hidden"/>
+                        <%
+                        }
+                        if(request.getParameter("search") != null){
+                        %>
+                            <input value="<%=request.getParameter("search")%>" name="search" type="hidden"/>
+                        <%
+                        }
+                    %>
                 <%-- Button --%>
                 <td><input type="submit" value="Update"></td>
                 </form>
                 <form action="products.jsp" method="POST">
                 <input type="hidden" name="paction" value="pdelete"/>
                 <input type="hidden" name="sku" value="<%=rs.getString("sku")%>"/>
+                    <%
+                        if(request.getParameter("filter") != null){
+                        %>
+                            <input value="<%=request.getParameter("filter")%>" name="filter" type="hidden"/>
+                        <%
+                        }
+                        if(request.getParameter("search") != null){
+                        %>
+                            <input value="<%=request.getParameter("search")%>" name="search" type="hidden"/>
+                        <%
+                        }
+                    %>
                 <%-- Button --%>
                 <td><input type="submit" value="Delete"/></td>
                 </form>
@@ -281,6 +385,9 @@
 </table>
 </div>
 </body>
+<%
+}
+%>
 
 </html>
 
