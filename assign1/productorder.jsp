@@ -22,8 +22,8 @@ PreparedStatement pstmt = null;
 ResultSet rs = null;
 ResultSet dropdownMenu = null;
 String uid = (String)session.getAttribute("userid");
-
-
+String pid = request.getParameter("productid");
+Int price = Integer.parseInt(request.getParameter("price"))
 try {
     // Registering Postgresql JDBC driver with the DriverManager
     Class.forName("org.postgresql.Driver");
@@ -32,12 +32,12 @@ try {
     conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/Assignment#1?" +
                                        "user=postgres&password=52362882");
     %>
-    <%-- -------- INSERT Code -------- --%>
+    <%-- -------- addtocart Code -------- --%>
     <%
     
-    String paction = request.getParameter("paction");
+    String paction = request.getParameter("action");
     // Check if an insertion is requested
-    if (paction != null && paction.equals("pinsert")) {
+    if (paction != null && paction.equals("addtocart")) {
         
         // Begin transaction
         conn.setAutoCommit(false);
@@ -45,12 +45,12 @@ try {
         // Create the prepared statement and use it to
         // INSERT name description INTO the products table.
         pstmt = conn
-        .prepareStatement("INSERT INTO products (sku, category, name, price) VALUES (?, ?, ?, ?)");
+        .prepareStatement("INSERT INTO cart (pid, uid, price, quanity) VALUES (?, ?, ?, ?)");
         
-        pstmt.setString(1, request.getParameter("newsku"));
-        pstmt.setString(2, request.getParameter("category"));
-        pstmt.setString(3, request.getParameter("pname"));
-        pstmt.setInt(4, Integer.parseInt(request.getParameter("price")));
+        pstmt.setString(1, pid);
+        pstmt.setString(2, uid);
+        pstmt.setInt(3, price);
+        pstmt.setInt(4, Integer.parseInt(request.getParameter("quanity")));
         pstmt.executeUpdate();
         
         // Commit transaction
@@ -62,10 +62,21 @@ try {
     
     
     <!-- Add an HTML table header row to format the results -->
-    
-    
-    <%=request.getParameter("productid")%>
+    <tr>
+    product <%=request.getParameter("productid")%>
+    price <%=request.getParameter("price")%>
 
+    </tr>
+    <tr>
+    quanity
+    </tr>
+    <tr>
+    <form action="productorder.jsp" method="POST">
+    <input type="hidden" name="action" value="addtocart"/>
+    <td><input value="" name="quanity" size="15"/></td>
+    <td><input type="submit" value="Order"/></td>
+    </form>
+    
     
     <%-- -------- SELECT Statement Code -------- --%>
     <%
@@ -75,7 +86,7 @@ try {
     // the student attributes FROM the categories table.
     Statement statement = conn.createStatement();
 
-    rs = statement.executeQuery("SELECT * FROM cart");
+    rs = statement.executeQuery("SELECT * FROM cart WHERE uid='"+uid+"'");
     
     %>
     <%-- -------- Iteration Code -------- --%>
