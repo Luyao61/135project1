@@ -20,7 +20,8 @@
             Connection conn = null;
             PreparedStatement pstmt = null;
             ResultSet rs = null;
-            
+            String pid = null;
+
             try {
                 // Registering Postgresql JDBC driver with the DriverManager
                 Class.forName("org.postgresql.Driver");
@@ -108,7 +109,9 @@
                     <input type="hidden" name="sku" value="<%=rs.getString("sku")%>"/>
                     
                 <td>
-                    <%=rs.getString("sku")%>
+                    <%pid =  rs.getString("sku");
+                    out.print(pid);
+                    %>
                 </td>
                 <td>
                     <%=rs.getString("name")%>
@@ -119,8 +122,8 @@
                 <td>
                     <%=rs.getInt("price")%>
                 </td>
-                <%-- Button --%>
-                <td><input type="submit" value="Buy"></td>
+            <%-- Button --%>
+                    <%out.println("<td><a href=\"productorder.jsp?productid="+pid+"\">BuyIt</a></td>");%>
                 </form>
             </tr>
 
