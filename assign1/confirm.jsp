@@ -42,7 +42,7 @@ try {
         while (rs.next()) {
             Integer id=rs.getInt("id");
             String userid=rs.getString("uid");
-            String sku=rs.getString("pid");
+            Integer sku=rs.getInt("pid");
             Integer price=rs.getInt("price");
             Integer quanity=rs.getInt("quanity");
         //---- ---- --- add to bought cart---- ------
@@ -54,7 +54,7 @@ try {
         pstmt = conn
         .prepareStatement("INSERT INTO boughtcart (uid, pid, price, quanity, date) VALUES (?, ?, ?, ?, ?)");
         pstmt.setString(1, userid);
-        pstmt.setString(2, sku);
+        pstmt.setInt(2, sku);
         pstmt.setInt(3, price);
         pstmt.setInt(4, quanity);
         pstmt.setString(5,request.getParameter("date"));

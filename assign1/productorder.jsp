@@ -48,7 +48,7 @@ try {
         pstmt = conn
         .prepareStatement("INSERT INTO cart (uid, pid, price, quanity) VALUES (?, ?, ?, ?)");
         pstmt.setString(1, request.getParameter("uid"));
-        pstmt.setString(2, request.getParameter("pid"));
+        pstmt.setInt(2, Integer.parseInt(request.getParameter("pid")));
         pstmt.setInt(3, Integer.parseInt(request.getParameter("price")));
         pstmt.setInt(4, Integer.parseInt(request.getParameter("quanity")));
        pstmt.executeUpdate();
@@ -63,7 +63,7 @@ try {
     
     <!-- Add an HTML table header row to format the results -->
     <p>
-    product <%=request.getParameter("pid")%>
+    product <%=request.getParameter("sku")%>
     </p>
     <p>
     price <%=request.getParameter("price")%>
@@ -76,6 +76,8 @@ try {
     <form action="productorder.jsp?productid=<%=request.getParameter("productid")%>&price=<%=Integer.parseInt(price_str)%>" method="POST">
     <input type="hidden" name="action" value="addtocart"/>
     <input type="hidden" name="pid" value="<%=request.getParameter("productid")%>"/>
+    <input type="hidden" name="sku" value="<%=request.getParameter("sku")%>"/>
+
     <input type="hidden" name="uid" value="<%=(String)session.getAttribute("userid")%>"/>
     <input type="hidden" name="price" value="<%=Integer.parseInt(price_str)%>"/>
     <td><input value="" name="quanity" size="15"/></td>

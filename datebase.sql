@@ -49,7 +49,7 @@ ALTER TABLE account OWNER TO postgres;
 
 CREATE TABLE boughtcart (
     id integer NOT NULL,
-    pid character(20) NOT NULL,
+    pid integer NOT NULL,
     uid character(20) NOT NULL,
     date character(40) NOT NULL,
     price integer NOT NULL,
@@ -87,7 +87,7 @@ ALTER SEQUENCE boughtcart_id_seq OWNED BY boughtcart.id;
 CREATE TABLE cart (
     id integer NOT NULL,
     uid character(20) NOT NULL,
-    pid character(20) NOT NULL,
+    pid integer NOT NULL,
     price integer NOT NULL,
     quanity integer NOT NULL
 );
@@ -230,91 +230,37 @@ INSERT INTO account VALUES ('ddd', 'Customer', 34, 'AL');
 -- Data for Name: boughtcart; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO boughtcart VALUES (1, 'asdmlakwej          ', 'zhang               ', '05/05/2015                              ', 2, 3);
-INSERT INTO boughtcart VALUES (2, 'asdmlakwej          ', 'zhang               ', '05/05/2015                              ', 2, 5);
-INSERT INTO boughtcart VALUES (3, 'qrnjebrh            ', 'zhang               ', '05/05/2015                              ', 1, 7);
-INSERT INTO boughtcart VALUES (4, 'qrnjebrh            ', 'zhang               ', '05/05/2015                              ', 1, 7);
-INSERT INTO boughtcart VALUES (5, 'asaskjht            ', 'zhang               ', '05/05/2015                              ', 2, 3);
-INSERT INTO boughtcart VALUES (6, 'asaskjht            ', 'zhang               ', '05/05/2015                              ', 2, 4);
-INSERT INTO boughtcart VALUES (7, 'asaskjht            ', 'zhang               ', '05/05/2015                              ', 2, 5);
-INSERT INTO boughtcart VALUES (8, 'asaskjht            ', 'zhang               ', '05/05/2015                              ', 2, 6);
-INSERT INTO boughtcart VALUES (9, 'asdmlakwej          ', 'zhang               ', '05/05/2015                              ', 2, 3);
-INSERT INTO boughtcart VALUES (10, 'asdmlakwej          ', 'zhang               ', '05/05/2015                              ', 2, 5);
-INSERT INTO boughtcart VALUES (11, 'qrnjebrh            ', 'zhang               ', '05/05/2015                              ', 1, 7);
-INSERT INTO boughtcart VALUES (12, 'qrnjebrh            ', 'zhang               ', '05/05/2015                              ', 1, 7);
-INSERT INTO boughtcart VALUES (13, 'asaskjht            ', 'zhang               ', '05/05/2015                              ', 2, 3);
-INSERT INTO boughtcart VALUES (14, 'asaskjht            ', 'zhang               ', '05/05/2015                              ', 2, 4);
-INSERT INTO boughtcart VALUES (15, 'asaskjht            ', 'zhang               ', '05/05/2015                              ', 2, 5);
-INSERT INTO boughtcart VALUES (16, 'asaskjht            ', 'zhang               ', '05/05/2015                              ', 2, 6);
-INSERT INTO boughtcart VALUES (17, 'asdmlakwej          ', 'zhang               ', '05/05/2015                              ', 2, 3);
-INSERT INTO boughtcart VALUES (18, 'asdmlakwej          ', 'zhang               ', '05/05/2015                              ', 2, 5);
-INSERT INTO boughtcart VALUES (19, 'qrnjebrh            ', 'zhang               ', '05/05/2015                              ', 1, 7);
-INSERT INTO boughtcart VALUES (20, 'qrnjebrh            ', 'zhang               ', '05/05/2015                              ', 1, 7);
-INSERT INTO boughtcart VALUES (21, 'asaskjht            ', 'zhang               ', '05/05/2015                              ', 2, 3);
-INSERT INTO boughtcart VALUES (22, 'asaskjht            ', 'zhang               ', '05/05/2015                              ', 2, 4);
-INSERT INTO boughtcart VALUES (23, 'asaskjht            ', 'zhang               ', '05/05/2015                              ', 2, 5);
-INSERT INTO boughtcart VALUES (24, 'asaskjht            ', 'zhang               ', '05/05/2015                              ', 2, 6);
-INSERT INTO boughtcart VALUES (25, 'asdmlakwej          ', 'zhang               ', '05/05/2015                              ', 2, 3);
-INSERT INTO boughtcart VALUES (26, 'asdmlakwej          ', 'zhang               ', '05/05/2015                              ', 2, 5);
-INSERT INTO boughtcart VALUES (27, 'qrnjebrh            ', 'zhang               ', '05/05/2015                              ', 1, 7);
-INSERT INTO boughtcart VALUES (28, 'qrnjebrh            ', 'zhang               ', '05/05/2015                              ', 1, 7);
-INSERT INTO boughtcart VALUES (29, 'asaskjht            ', 'zhang               ', '05/05/2015                              ', 2, 3);
-INSERT INTO boughtcart VALUES (30, 'asaskjht            ', 'zhang               ', '05/05/2015                              ', 2, 4);
-INSERT INTO boughtcart VALUES (31, 'asaskjht            ', 'zhang               ', '05/05/2015                              ', 2, 5);
-INSERT INTO boughtcart VALUES (32, 'asaskjht            ', 'zhang               ', '05/05/2015                              ', 2, 6);
-INSERT INTO boughtcart VALUES (33, 'asdmlakwej          ', 'zhang               ', '05/05/2015                              ', 2, 3);
-INSERT INTO boughtcart VALUES (34, 'asdmlakwej          ', 'zhang               ', '05/05/2015                              ', 2, 5);
-INSERT INTO boughtcart VALUES (35, 'qrnjebrh            ', 'zhang               ', '05/05/2015                              ', 1, 7);
-INSERT INTO boughtcart VALUES (36, 'qrnjebrh            ', 'zhang               ', '05/05/2015                              ', 1, 7);
-INSERT INTO boughtcart VALUES (37, 'asaskjht            ', 'zhang               ', '05/05/2015                              ', 2, 3);
-INSERT INTO boughtcart VALUES (38, 'asaskjht            ', 'zhang               ', '05/05/2015                              ', 2, 4);
-INSERT INTO boughtcart VALUES (39, 'asaskjht            ', 'zhang               ', '05/05/2015                              ', 2, 5);
-INSERT INTO boughtcart VALUES (40, 'asaskjht            ', 'zhang               ', '05/05/2015                              ', 2, 6);
-INSERT INTO boughtcart VALUES (41, 'asdrewnm            ', 'zhang               ', '05/05/2015                              ', 3, 7);
-INSERT INTO boughtcart VALUES (42, 'qrnjebrh            ', 'zhang               ', '05/05/2015                              ', 1, 6);
+INSERT INTO boughtcart VALUES (1, 1, 'zhang               ', '05/05/2015                              ', 111, 3);
+INSERT INTO boughtcart VALUES (2, 1, 'zhang               ', '05/05/2015                              ', 111, 4);
+INSERT INTO boughtcart VALUES (3, 2, 'zhang               ', '05/05/2015                              ', 1, 5);
+INSERT INTO boughtcart VALUES (4, 2, 'zhang               ', '05/05/2015                              ', 1, 5);
+INSERT INTO boughtcart VALUES (5, 1, 'zhang               ', '05/05/2015                              ', 111, 3);
+INSERT INTO boughtcart VALUES (6, 1, 'zhang               ', '05/05/2015                              ', 111, 3);
+INSERT INTO boughtcart VALUES (7, 1, 'zhang               ', '05/05/2015                              ', 111, 4);
+INSERT INTO boughtcart VALUES (8, 1, 'zhang               ', '05/05/2015                              ', 111, 5);
+INSERT INTO boughtcart VALUES (9, 9, 'zhang               ', '05/05/2015                              ', 2, 333);
+INSERT INTO boughtcart VALUES (10, 9, 'zhang               ', '05/05/2015                              ', 2, 4);
+INSERT INTO boughtcart VALUES (11, 9, 'zhang               ', '05/05/2015                              ', 2, 5);
 
 
 --
 -- Name: boughtcart_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('boughtcart_id_seq', 42, true);
+SELECT pg_catalog.setval('boughtcart_id_seq', 11, true);
 
 
 --
 -- Data for Name: cart; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO cart VALUES (1, 'ddd                 ', 'askntramwenr        ', 1, 5);
-INSERT INTO cart VALUES (2, 'ddd                 ', 'awerfe              ', 10, 4);
-INSERT INTO cart VALUES (3, 'ddd                 ', 'qrnjebrh            ', 1, 8);
-INSERT INTO cart VALUES (6, 'ddd                 ', 'qrnjebrh            ', 1, 5);
-INSERT INTO cart VALUES (7, 'ddd                 ', 'qrnjebrh            ', 1, 5);
-INSERT INTO cart VALUES (9, 'ddd                 ', '1234567890          ', 1, 3);
-INSERT INTO cart VALUES (11, 'ddd                 ', '1234567890          ', 1, 3);
-INSERT INTO cart VALUES (12, 'ddd                 ', '1234567890          ', 1, 3);
-INSERT INTO cart VALUES (14, 'ddd                 ', 'asdmlakwej          ', 2, 4);
-INSERT INTO cart VALUES (15, 'ddd                 ', 'awerfe              ', 10, 3);
-INSERT INTO cart VALUES (17, 'ddd                 ', 'awerfe              ', 10, 3);
-INSERT INTO cart VALUES (18, 'ddd                 ', 'awerfe              ', 10, 3);
-INSERT INTO cart VALUES (19, 'ccc                 ', 'awerfe              ', 10, 3);
-INSERT INTO cart VALUES (21, 'ccc                 ', 'awerfe              ', 10, 3);
-INSERT INTO cart VALUES (22, 'ccc                 ', 'awerfe              ', 10, 3);
-INSERT INTO cart VALUES (24, 'ccc                 ', 'asdmlakwej          ', 2, 6);
-INSERT INTO cart VALUES (25, 'ccc                 ', 'asdmlakwej          ', 2, 2);
-INSERT INTO cart VALUES (26, 'ccc                 ', 'asdmlakwej          ', 2, 5);
-INSERT INTO cart VALUES (27, 'ccc                 ', 'asdmlakwej          ', 2, 7);
-INSERT INTO cart VALUES (28, 'ccc                 ', 'asdmlakwej          ', 2, 4);
-INSERT INTO cart VALUES (29, 'ccc                 ', 'aneaueh             ', 1, 3);
-INSERT INTO cart VALUES (30, 'ccc                 ', 'asdmlakwej          ', 2, 4);
-INSERT INTO cart VALUES (31, 'ccc                 ', 'awerfe              ', 10, 100);
 
 
 --
 -- Name: cart_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('cart_id_seq', 41, true);
+SELECT pg_catalog.setval('cart_id_seq', 14, true);
 
 
 --
@@ -336,7 +282,6 @@ SELECT pg_catalog.setval('categories_id_seq', 4, true);
 -- Data for Name: products; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO products VALUES (2, 4, 'carrot', '1234567890', 1);
 INSERT INTO products VALUES (3, 4, 'tomato', 'asdmlakwej', 2);
 INSERT INTO products VALUES (9, 1, 'banana', 'asaskjht', 2);
 INSERT INTO products VALUES (10, 1, 'grape', 'asdrewnm', 3);
@@ -350,7 +295,8 @@ INSERT INTO products VALUES (20, 1, 'red apple', 'awejhhu', 1);
 INSERT INTO products VALUES (21, 1, 'green apple', 'gaernjnu', 1);
 INSERT INTO products VALUES (25, 1, 'small apple', 'asenrjun', 1);
 INSERT INTO products VALUES (31, 1, 'MANGO', 'WERNKENI', 2);
-INSERT INTO products VALUES (1, 1, 'apple', 'awerfe', 10);
+INSERT INTO products VALUES (1, 1, 'apple', 'awerfedd', 111);
+INSERT INTO products VALUES (2, 4, 'carrot', '1234567890s', 1);
 
 
 --
@@ -421,7 +367,7 @@ ALTER TABLE ONLY products
 --
 
 ALTER TABLE ONLY boughtcart
-    ADD CONSTRAINT boughtcart_pid_fkey FOREIGN KEY (pid) REFERENCES products(sku);
+    ADD CONSTRAINT boughtcart_pid_fkey FOREIGN KEY (pid) REFERENCES products(id);
 
 
 --
@@ -429,15 +375,7 @@ ALTER TABLE ONLY boughtcart
 --
 
 ALTER TABLE ONLY cart
-    ADD CONSTRAINT cart_pid_fkey FOREIGN KEY (pid) REFERENCES products(sku);
-
-
---
--- Name: cart_uid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY cart
-    ADD CONSTRAINT cart_uid_fkey FOREIGN KEY (uid) REFERENCES account(name);
+    ADD CONSTRAINT cart_pid_fkey FOREIGN KEY (pid) REFERENCES products(id);
 
 
 --
@@ -445,6 +383,14 @@ ALTER TABLE ONLY cart
 --
 
 ALTER TABLE ONLY boughtcart
+    ADD CONSTRAINT cart_uid_fkey FOREIGN KEY (uid) REFERENCES account(name);
+
+
+--
+-- Name: cart_uid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY cart
     ADD CONSTRAINT cart_uid_fkey FOREIGN KEY (uid) REFERENCES account(name);
 
 

@@ -66,21 +66,21 @@
                 // Use the created statement to SELECT
                 // the student attributes FROM the categories table.
                 if(filter != -1 && search == null ){
-                    rs = statement.executeQuery("SELECT p.sku, p.name, c.name as category, p.price"
+                    rs = statement.executeQuery("SELECT p.id,p.sku, p.name, c.name as category, p.price"
                                                 +" FROM categories c, products p"
                                                 +" WHERE p.cid= c.id and cid ="+filter
                                                 +" order by p.id asc;");   
 //                out.print(1);
                 }
                 else if(filter == -1 && search == null){
-                    rs = statement.executeQuery("SELECT p.sku, p.name, c.name as category, p.price"
+                    rs = statement.executeQuery("SELECT p.id,p.sku, p.name, c.name as category, p.price"
                                                 +" FROM categories c, products p"
                                                 +" WHERE p.cid= c.id"
                                                 +" order by p.id asc;");
 //                out.print(2);
                 }
                 else if(filter == -1 && search != null){
-                    rs = statement.executeQuery("SELECT p.sku, p.name, c.name as category, p.price"
+                    rs = statement.executeQuery("SELECT p.id,p.sku, p.name, c.name as category, p.price"
                                                 +" FROM categories c, products p"
                                                 +" WHERE p.cid= c.id"
                                                 +" AND"
@@ -89,7 +89,7 @@
 //                out.print(3);
                 }
                 else if(filter != -1 && search != null ){
-                    rs = statement.executeQuery("SELECT p.sku, p.name, c.name as category, p.price"
+                    rs = statement.executeQuery("SELECT p.id,p.sku, p.name, c.name as category, p.price"
                                                 +" FROM categories c, products p"
                                                 +" WHERE p.cid= c.id and cid = '"+filter+"'"
                                                 +" and p.name LIKE '%"+search+"%'"
@@ -122,6 +122,7 @@
             <%
                 // Iterate over the ResultSet
                 while (rs.next()) {
+                    Integer id=rs.getInt("id");
             %>
 
             <tr>
@@ -147,7 +148,7 @@
                     %>
                 </td>
             <%-- Button --%>
-                    <%out.println("<td><a href=\"productorder.jsp?productid="+pid+"&price="+price+"\">BuyIt</a></td>");%>
+                    <%out.println("<td><a href=\"productorder.jsp?productid="+id+"&price="+price+"&sku="+pid+"\">BuyIt</a></td>");%>
                 </form>
             </tr>
 
