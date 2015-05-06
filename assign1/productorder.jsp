@@ -7,8 +7,41 @@
 <%@ page import ="javax.servlet.http.HttpServletResponse" %>
 
 <html>
+<head>
+<title> Product order</title>
+</head>
+<%
+String id = (String)session.getAttribute("userid");
 
+if (id == null){
+    out.print("<h3>You have not logged in</h3>");
+    out.print("<p><a href='index.jsp'>click here to login in</a></p>");
+}
+else{
+%>
 <body>
+        
+<%
+    String role = (String)session.getAttribute("userType");
+    if(role.contains("Customer")){
+%>
+    <div align="right">    
+        <p><a href="buycart.jsp">Check out</a></p> 
+    </div>
+<%
+    }
+%>
+
+
+<%
+    if( request.getParameter("buy") == null){
+%>
+    <p style="color:red">invalid request</p>
+    <p><a href="home.jsp">Click here to go back to home page</a></p>
+<%
+    }
+    else{
+%>
 <table>
 <tr>
 <td valign="top">
@@ -32,30 +65,39 @@ try {
     Class.forName("org.postgresql.Driver");
     
     // Open a connection to the database using DriverManager
-    conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/project1?" +
+    conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/Assignment#1?" +
                                        "user=postgres&password=52362882");
   //add to cart
     
     String paction = request.getParameter("action");
     // Check if an insertion is requested
     if (paction != null && paction.equals("addtocart")) {
-        
-        // Begin transaction
-        conn.setAutoCommit(false);
-        
-        // Create the prepared statement and use it to
-        // INSERT name description INTO the products table.
-        pstmt = conn
-        .prepareStatement("INSERT INTO cart (uid, pid, price, quanity) VALUES (?, ?, ?, ?)");
-        pstmt.setString(1, request.getParameter("uid"));
-        pstmt.setInt(2, Integer.parseInt(request.getParameter("pid")));
-        pstmt.setInt(3, Integer.parseInt(request.getParameter("price")));
-        pstmt.setInt(4, Integer.parseInt(request.getParameter("quanity")));
-       pstmt.executeUpdate();
-        
-        // Commit transaction
-        conn.commit();
-        conn.setAutoCommit(true);
+        if (request.getParameter("quantity") != null && !request.getParameter("quantity").isEmpty() && request.getParameter("quantity").trim().length() != 0 && Integer.parseInt(request.getParameter("quantity")) != 0){
+            try{
+                // Begin transaction
+                conn.setAutoCommit(false);
+
+                // Create the prepared statement and use it to
+                // INSERT name description INTO the products table.
+                pstmt = conn
+                .prepareStatement("INSERT INTO cart (uid, pid, quantity, price) VALUES (?, ?, ?, ?)");
+                pstmt.setString(1, request.getParameter("uid"));
+                pstmt.setInt(2, Integer.parseInt(request.getParameter("pid")));
+                pstmt.setInt(3, Integer.parseInt(request.getParameter("quantity")));
+                pstmt.setInt(4, Integer.parseInt(request.getParameter("price")));
+                pstmt.executeUpdate();
+
+                // Commit transaction
+                conn.commit();
+                conn.setAutoCommit(true);
+            }catch(Exception e){
+                out.print("<p style='color:red'>sorry, an exception occurred.</p>");
+            }
+
+        }
+        else{
+            out.print("<p style='color:red'>please enter a valid quantity!</p>");
+        }
     }
     %>
     
@@ -63,13 +105,13 @@ try {
     
     <!-- Add an HTML table header row to format the results -->
     <p>
-    product <%=request.getParameter("sku")%>
+    product name: <%=request.getParameter("productname")%>
     </p>
     <p>
-    price <%=request.getParameter("price")%>
+    price: $<%=request.getParameter("price")%>
     </p>
     <p>
-    quanity
+    quantity
     </p>
     
     <tr>
@@ -80,25 +122,26 @@ try {
 
     <input type="hidden" name="uid" value="<%=(String)session.getAttribute("userid")%>"/>
     <input type="hidden" name="price" value="<%=Integer.parseInt(price_str)%>"/>
-    <td><input value="" name="quanity" size="15"/></td>
+    <input type="hidden" name="buy" value="browsingproduct"/>
+    <td><input value="" name="quantity" size="15"/></td>
     <td><input type="submit" value="Order"/></td>
     </form>
     <table border="1">
     <tr>
     <th>USER</th>
     <th>SKU</th>
-    <th>price</th>
-    <th>quanity</th>
+    <th>Name</th>
+    <th>Price</th>
+    <th>Quantity</th>
     </tr>
     <%-- -------- SELECT Statement Code -------- --%>
     <%
     // Create the statement
-    
-    // Use the created statement to SELECT
-    // the student attributes FROM the categories table.
     Statement statement = conn.createStatement();
-    rs = statement.executeQuery("SELECT * FROM cart WHERE uid='"+usid+"'");
-    
+
+    // Use the created statement to SELECT
+    rs = statement.executeQuery("SELECT c.uid, c.pid, p.sku, c.price, c.quantity, p.name FROM cart c, products p WHERE c.uid='"+usid+"' and p.id =c.pid");
+
     %>
     <%-- -------- Iteration Code -------- --%>
     
@@ -113,13 +156,17 @@ try {
         <%=rs.getString("uid")%>
         </td>
         <td>
-        <%=rs.getString("pid")%>
+        <%=rs.getString("sku")%>
         </td>
         <td>
+        <%=rs.getString("name")%>
+        </td>
+        <td>
+        $
         <%=rs.getInt("price")%>
         </td>
         <td>
-        <%=rs.getInt("quanity")%>
+        <%=rs.getInt("quantity")%>
         </td>
         <%-- Button --%>
         </form>
@@ -127,9 +174,10 @@ try {
     
         <%}
         %>
-        
+         
     <p><a href="bproducts.jsp?filter=-1&search=%3C%=request.getParameter%28">countinue shopping</a></p>
-    <p><a href="buycart.jsp">buy shopping cart</a></p>
+            <p><a href="buycart.jsp">Check out</a></p> 
+
 
     <%-- -------- Close Connection Code -------- --%>
     <%
@@ -177,7 +225,13 @@ finally {
 </td>
 </tr>
 </table>
+<%
+}
+%>
 </body>
+<%
+}
+%>
 
 </html>
 

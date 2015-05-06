@@ -13,6 +13,7 @@ String id = (String)session.getAttribute("userid");
 
 if (id == null){
     out.print("<h3>You have not logged in</h3>");
+    out.print("<p><a href='index.jsp'>click here to login in</a></p>");
 }
 else if(role.contains("Customer")){
     out.print("<h3>this page is available to owners only.</h3>");
@@ -40,7 +41,7 @@ else {
         Class.forName("org.postgresql.Driver");
         
         // Open a connection to the database using DriverManager
-        conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/project1?" +
+        conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/Assignment#1?" +
                                            "user=postgres&password=52362882");
         %>
     

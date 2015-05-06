@@ -12,7 +12,7 @@
     try{
     
         Class.forName("org.postgresql.Driver");
-        Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/project1",
+        Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/Assignment#1",
             "postgres", "52362882");
         Statement st = con.createStatement();
         rs = st.executeQuery("SELECT * FROM account WHERE name = '" + name + "' ;");

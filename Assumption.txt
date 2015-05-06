@@ -1,0 +1,4 @@
+Assumption chosen:
+Categories page------A Assumption------owner can access and mange any categories.
+Shopping cart page------------ persistent keep the shopping cart record all the time.
+

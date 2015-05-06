@@ -8,7 +8,15 @@
 
 <html>
 <!-- ---------- Check user type ---------- -->
+<%
+String userid = (String)session.getAttribute("userid");
 
+if (userid == null){
+    out.print("<h3>You have not logged in</h3>");
+    out.print("<p><a href='index.jsp'>click here to login in</a></p>");
+}
+else{
+%>
 <head>
     <title>Procudts browsing</title>
         <%-- -------- Open Connection Code -------- --%>
@@ -23,12 +31,27 @@
             Class.forName("org.postgresql.Driver");
 
             // Open a connection to the database using DriverManager
-            conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/project1?" +
+            conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/Assignment#1?" +
                                                "user=postgres&password=52362882");
             Statement statement = conn.createStatement();
         %>
 </head>
 <body>
+
+<%
+    String role = (String)session.getAttribute("userType");
+    if(role.contains("Customer")){
+%>
+    <div align="right">    
+        <p><a href="buycart.jsp">Check out</a></p> 
+    </div>
+<%
+    }
+%>
+<div style = "float:left; width:20%">
+<jsp:include page="menu.html" />
+</div>
+
 <div style="float:left; width:15%">
 
     <%
@@ -41,7 +64,7 @@
         }
     %>
 </div>
-<div style="float:right; width:85%">
+<div style="float:right; width:65%">
 <table>
     <tr>
         <td valign="top">
@@ -122,7 +145,7 @@
             <%
                 // Iterate over the ResultSet
                 while (rs.next()) {
-                    Integer id=rs.getInt("id");
+                    int id=rs.getInt("id");
             %>
 
             <tr>
@@ -136,19 +159,20 @@
                     %>
                 </td>
                 <td>
-                    <%=rs.getString("name")%>
+                    <%String productname = rs.getString("name");%>
+                    <%=productname%>
                 </td>
                 <td>
                     <%=rs.getString("category")%>
                 </td>
                 <td>
+                    <%out.print("$");%>
                     <%=rs.getInt("price")%>
                     <% Integer price=rs.getInt("price");
-                    out.print("price");
                     %>
                 </td>
             <%-- Button --%>
-                    <%out.println("<td><a href=\"productorder.jsp?productid="+id+"&price="+price+"&sku="+pid+"\">BuyIt</a></td>");%>
+                    <%out.println("<td><a href=\"productorder.jsp?buy=browsingproduct&productname="+productname+"&productid="+id+"&price="+price+"&sku="+pid+"\">BuyIt</a></td>");%>
                 </form>
             </tr>
 
@@ -202,6 +226,9 @@
 </table>
 <div>
 </body>
+<%
+}
+%>
 
 </html>
 

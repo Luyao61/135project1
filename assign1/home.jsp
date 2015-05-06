@@ -5,6 +5,16 @@
 	<title>HOME</title>
 </head>
 <body>
+<%
+    String role = (String)session.getAttribute("userType");
+    if(role.contains("Customer")){
+%>
+    <div align="left">    
+        <p><a href="buycart.jsp">Check out</a></p> 
+    </div>
+<%
+    }
+%>
     <%
     //out.print("<h1>HELLO</h1>");
     //out.print(session.getAttribute("userType"));
@@ -12,7 +22,7 @@
 
     String owner = new String("Owner");
     String customer = new String("Customer");
-    String role = (String)session.getAttribute("userType");
+     role = (String)session.getAttribute("userType");
     String userid = request.getParameter("nuserid");
 
 
