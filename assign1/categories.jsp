@@ -7,7 +7,19 @@
 <%@ page import ="javax.servlet.http.HttpServletResponse" %>
 
 <html>
-<head> 
+<%
+String role = (String)session.getAttribute("userType");
+String id = (String)session.getAttribute("userid");
+
+if (id == null){
+    out.print("<h3>You have not logged in</h3>");
+}
+else if(role.contains("Customer")){
+    out.print("<h3>this page is available to owners only.</h3>");
+}
+else {
+    %>
+<head>
     <title>Categories</title>
             <%
                 Connection conn = null;
@@ -16,7 +28,25 @@
                 String userid = (String)session.getAttribute("userid");
 
             %>
-                <%-- -------- INSERT Code -------- --%>
+    <%-- Import the java.sql package --%>
+    <%@ page import="java.sql.*"%>
+    <%-- -------- Open Connection Code -------- --%>
+    <%
+    
+    
+    
+    try {
+        // Registering Postgresql JDBC driver with the DriverManager
+        Class.forName("org.postgresql.Driver");
+        
+        // Open a connection to the database using DriverManager
+        conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/project1?" +
+                                           "user=postgres&password=52362882");
+        %>
+    
+    
+    
+                    <%-- -------- INSERT Code -------- --%>
             <%
 
                 String action = request.getParameter("action");
@@ -103,36 +133,11 @@
 </head>
 
 <body>
-    <%
-        String role = (String)session.getAttribute("userType");
-        String id = (String)session.getAttribute("userid");
 
-        if (id == null){
-            out.print("<h3>You have not logged in</h3>");
-        }
-        else if(role.contains("Customer")){
-            out.print("<h3>this page is available to owners only.</h3>");
-        }
-        else { 
-    %>
 <table>
     <tr>
 
-            <%-- Import the java.sql package --%>
-            <%@ page import="java.sql.*"%>
-            <%-- -------- Open Connection Code -------- --%>
-            <%
-            
-
-            
-            try {
-                // Registering Postgresql JDBC driver with the DriverManager
-                Class.forName("org.postgresql.Driver");
-
-                // Open a connection to the database using DriverManager
-                conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/project1?" +
-                                                   "user=postgres&password=52362882");
-            %>
+    
             
             
 
