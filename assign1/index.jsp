@@ -31,7 +31,7 @@
                         <td><input type="reset" value="Reset" /></td>
                     </tr>
                     <tr>
-                        <td colspan="2">Yet Not Registered!! <a href="reg.jsp">Register Here</a></td>
+                        <td colspan="2">Do not have an account?<a href="reg.jsp">Register Here</a></td>
                     </tr>
                 </tbody>
             </table>
